@@ -171,6 +171,7 @@ def pact(request, pact_settings):
     # have been torn down at that point
     pact.publish_to_broker = False
 
+
 def pytest_addoption(parser):
     parser.addoption(
         '--publish-pact',
