@@ -15,8 +15,8 @@ import atexit
 
 from consumer.product import ProductConsumer
 
-log = logging.getLogger(__name__)
 logging.basicConfig(level=logging.INFO)
+log = logging.getLogger(__name__)
 
 
 # If publishing the Pact(s), they will be submitted to the Pact Broker here.
