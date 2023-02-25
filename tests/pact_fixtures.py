@@ -8,6 +8,7 @@
 import atexit
 import logging
 import os
+from os import environ
 
 import docker
 import pytest
@@ -62,35 +63,28 @@ def broker(request):
 
 
 @pytest.fixture(scope='session')
-def pact_settings():
-    return dict(
-        # If publishing the Pact(s), they will be submitted to the Pact Broker here.
-        # For the purposes of this example, the broker is started up as a fixture defined
-        # in conftest.py. For normal usage this would be self-hosted or using PactFlow.
-        broker_url=os.environ.get(
-            'PACT_BROKER_URL',
-            'http://localhost'
-        ).rstrip('/'),
-        broker_username=os.environ.get(
-            'PACT_BROKER_USERNAME',
-            'pactbroker'
-        ),
-        broker_password=os.environ.get(
-            'PACT_BROKER_PASSWORD',
-            'pactbroker'
-        ),
+def mock_opts():
+    """Define where to run the mock server, for the consumer to connect to."""
+    host_name = environ.get('PACT_MOCK_HOST', 'localhost')
+    return {
+        'host_name': host_name.rstrip('/'),
+        'port': int(environ.get('PACT_MOCK_PORT', 1234)),
+    }
 
-        # Define where to run the mock server, for the consumer to connect to. These
-        # are the defaults so may be omitted
-        mock_host=os.environ.get(
-            'PACT_MOCK_HOST',
-            'localhost'
-        ).rstrip('/'),
-        mock_port=int(os.environ.get('PACT_MOCK_PORT', 1234)))
+
+@pytest.fixture(scope='session')
+def broker_opts():
+    """Get Pact Broker options."""
+    host = environ.get('PACT_BROKER_URL', 'http://localhost')
+    return {
+        'broker_base_url': host.rstrip('/'),
+        'broker_username': environ.get('PACT_BROKER_USERNAME', 'pactbroker'),
+        'broker_password': environ.get('PACT_BROKER_PASSWORD', 'pactbroker'),
+    }
 
 
 @pytest.fixture(scope='session', autouse=True)
-def publish_existing_pact(broker, pact_settings):
+def publish_existing_pact(broker, broker_opts):
     source = os.path.join(
         os.path.dirname(os.path.realpath(__file__)),
         'pacts'
@@ -99,8 +93,8 @@ def publish_existing_pact(broker, pact_settings):
     envs = {
         # Keep these parameters according to docker-compose.yml
         'PACT_BROKER_BASE_URL': 'http://broker_app:9292',
-        'PACT_BROKER_USERNAME': pact_settings['broker_username'],
-        'PACT_BROKER_PASSWORD': pact_settings['broker_password'],
+        'PACT_BROKER_USERNAME': broker_opts['broker_username'],
+        'PACT_BROKER_PASSWORD': broker_opts['broker_password'],
     }
 
     client = docker.from_env()
@@ -132,7 +126,7 @@ def publish_existing_pact(broker, pact_settings):
 
 
 @pytest.fixture(scope='session')
-def pact(request, pact_settings):
+def pact(request, broker_opts, mock_opts):
     """Set up a Pact Consumer, which provides the Provider mock service.
 
     This will generate and optionally publish Pacts to the Pact Broker"""
@@ -152,13 +146,11 @@ def pact(request, pact_settings):
     consumer = Consumer('ProductServiceClient', version=version)
     pact = consumer.has_pact_with(
         Provider('ProductService'),
-        host_name=pact_settings['mock_host'],
-        port=pact_settings['mock_port'],
         pact_dir=pact_dir,
         publish_to_broker=publish,
-        broker_base_url=pact_settings['broker_url'],
-        broker_username=pact_settings['broker_username'],
-        broker_password=pact_settings['broker_password'])
+        **mock_opts,
+        **broker_opts,
+    )
 
     pact.start_service()
 

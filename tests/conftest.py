@@ -14,7 +14,7 @@ pytest_plugins = [
 
 
 @pytest.fixture
-def consumer(pact_settings) -> ProductConsumer:
+def consumer(mock_opts) -> ProductConsumer:
     return ProductConsumer(
-        f"http://{pact_settings['mock_host']}:{pact_settings['mock_port']}"
+        f"http://{mock_opts['host_name']}:{mock_opts['port']}"
     )
