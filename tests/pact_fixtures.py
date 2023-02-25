@@ -8,6 +8,7 @@
 import pytest
 import pathlib
 import docker
+import os
 from testcontainers.compose import DockerCompose
 
 
@@ -30,7 +31,8 @@ def broker(request):
     if run_broker:
         # Start up the broker using docker-compose
         print('Starting broker')
-        with DockerCompose('./broker', pull=True) as compose:
+        broker = str(pathlib.Path.cwd().joinpath(os.path.dirname(os.path.realpath(__file__)), 'broker').resolve())
+        with DockerCompose(broker, pull=True) as compose:
             stdout, stderr = compose.get_logs()
             if stderr:
                 print(f'Errors\n:{stderr}')
