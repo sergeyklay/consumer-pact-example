@@ -31,16 +31,17 @@ class ProductConsumer:
     Demonstrate some basic functionality of how the Product Consumer will
     interact with the Product Provider, in this case a simple get_product."""
 
-    def __init__(self, base_uri: str, version: str):
+    API_VERSION = 'v1'
+
+    def __init__(self, base_uri: str):
         """Initialise the Consumer, in this case we only need to know the URI.
 
         :param base_uri: The full URI, including port of the Provider to
                          connect to"""
-        self.base_uri = base_uri
-        self.version = version
+        self.base_uri = base_uri.rstrip('/')
 
     def get_product(self, product_id: int) -> Optional[Product]:
-        uri = f'{self.base_uri}/{self.version}/products/{product_id}'
+        uri = f'{self.base_uri}/{self.API_VERSION}/products/{product_id}'
         response = requests.get(uri, timeout=3.0)
 
         if response.status_code == 404:
