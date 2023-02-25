@@ -5,11 +5,13 @@
 # For the full copyright and license information, please view
 # the LICENSE file that was distributed with this source code.
 
+import atexit
 import logging
 import os
 
 import docker
 import pytest
+from pact import Consumer, Provider
 from testcontainers.compose import DockerCompose
 
 logging.basicConfig(level=logging.INFO)
@@ -88,6 +90,86 @@ def publish_existing_pact(broker):
 
     log.info('Finished publishing')
 
+
+@pytest.fixture(scope='session')
+def pact_settings():
+    return dict(
+        # If publishing the Pact(s), they will be submitted to the Pact Broker here.
+        # For the purposes of this example, the broker is started up as a fixture defined
+        # in conftest.py. For normal usage this would be self-hosted or using PactFlow.
+        broker_url=os.environ.get(
+            'PACT_BROKER_URL',
+            'http://localhost'
+        ).rstrip('/'),
+        broker_usernane=os.environ.get(
+            'PACT_BROKER_USERNAME',
+            'pactbroker'
+        ),
+        broker_password=os.environ.get(
+            'PACT_BROKER_PASSWORD',
+            'pactbroker'
+        ),
+
+        # Define where to run the mock server, for the consumer to connect to. These
+        # are the defaults so may be omitted
+        mock_host=os.environ.get(
+            'PACT_MOCK_HOST',
+            'localhost'
+        ).rstrip('/'),
+        mock_port=int(os.environ.get(
+            'PACT_MOCK_PORT',
+            1234
+        )),
+    )
+
+
+@pytest.fixture(scope='session')
+def pact(request, pact_settings):
+    """Set up a Pact Consumer, which provides the Provider mock service.
+
+    This will generate and optionally publish Pacts to the Pact Broker"""
+
+    # When publishing a Pact to the Pact Broker, a version number of the Consumer
+    # is required, to be able to construct the compatability matrix between the
+    # Consumer versions and Provider versions
+    version = request.config.getoption('--publish-pact')
+    publish = True if version else False
+
+    # Where to output the JSON Pact files created by any tests
+    pact_dir = os.path.join(
+        os.path.dirname(os.path.realpath(__file__)),
+        'pacts'
+    )
+
+    consumer = Consumer('ProductServiceClient', version=version)
+    pact = consumer.has_pact_with(
+        Provider('ProductService'),
+        host_name=pact_settings['mock_host'],
+        port=pact_settings['mock_port'],
+        pact_dir=pact_dir,
+        publish_to_broker=publish,
+        broker_base_url=pact_settings['broker_url'],
+        broker_username=pact_settings['broker_usernane'],
+        broker_password=pact_settings['broker_password'],
+    )
+
+    pact.start_service()
+
+    # Make sure the Pact mocked provider is stopped when we finish, otherwise
+    # port 1234 may become blocked
+    atexit.register(pact.stop_service)
+
+    yield pact
+
+    # This will stop the Pact mock server, and if publish is True, submit Pacts
+    # to the Pact Broker
+    pact.stop_service()
+
+    # Given we have cleanly stopped the service, we do not want to re-submit the
+    # Pacts to the Pact Broker again atexit, since the Broker may no longer be
+    # available if it has been started using the --run-broker option, as it will
+    # have been torn down at that point
+    pact.publish_to_broker = False
 
 def pytest_addoption(parser):
     parser.addoption(

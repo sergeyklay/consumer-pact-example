@@ -35,6 +35,15 @@
           "$.body.id": {
             "match": "type"
           },
+          "$.body.description": {
+            "match": "type"
+          },
+          "$.body.brand": {
+            "match": "type"
+          },
+          "$.body.category": {
+            "match": "type"
+          },
           "$.body.price": {
             "match": "type"
           },
