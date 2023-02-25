@@ -6,6 +6,7 @@
 # the LICENSE file that was distributed with this source code.
 
 import pytest
+
 from consumer.product import ProductConsumer
 
 pytest_plugins = [
