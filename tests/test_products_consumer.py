@@ -12,7 +12,7 @@ import logging
 import os
 
 import pytest
-from pact import Consumer, Like, Provider
+from pact import Consumer, Like, Provider, Format
 
 from consumer.product import ProductConsumer
 
@@ -53,7 +53,8 @@ def pact(request):
     version = request.config.getoption('--publish-pact')
     publish = True if version else False
 
-    pact = Consumer('ProductServiceClient', version=version).has_pact_with(
+    consumer = Consumer('ProductServiceClient', version=version)
+    pact = consumer.has_pact_with(
         Provider('ProductService'),
         host_name=PACT_MOCK_HOST,
         port=PACT_MOCK_PORT,
@@ -86,6 +87,16 @@ def pact(request):
 def test_get_product(pact, consumer):
     # Define the Matcher; the expected structure and content of the response
     expected = {
+        'id': Format().integer,
+        'title': 'Over group reach plan health',
+        'description': 'Chair answer nature do benefit be tonight make travel season itself weight hard.',
+        'brand': 'Wilson Inc',
+        'category': 'around',
+        'price': Format().decimal,
+        'discount': Format().decimal,
+        'rating': Format().decimal,
+        'stock': Format().integer,
+        'self_url': 'http://localhost/v1/products/10',
     }
 
     # Define the expected behaviour of the Provider. This determines how the
