@@ -122,11 +122,13 @@ EXTRAS_REQUIRE = {
     # Dependencies that are required to run tests
     'testing': [
         'coverage[toml]>=6.0',  # Code coverage measurement for Python
+        'docker>=6.0.0',  # A Python library for the Docker Engine API
         'flake8-blind-except>=0.2.0',  # Checks for blind except: statements
         'flake8-import-order>=0.18.1',  # Checks the ordering of imports
         'flake8>=6.0.0',  # The modular source code checker
         'pylint>=2.6.2',  # Python code static checker
         'pytest>=6.2.4',  # Our tests framework
+        'testcontainers>=3.7.0',  # API to run Docker container
     ],
     'docs': [
     ],
