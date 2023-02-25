@@ -42,9 +42,9 @@ def broker(request):
         with DockerCompose(broker, pull=True) as compose:
             stdout, stderr = compose.get_logs()
             if stderr:
-                print(f'Errors\n:{stderr}')
-            print(f'{stdout}')
-            print('Started broker')
+                log.error(f'Errors\n:{stderr}')
+            log.info(f'{stdout}')
+            log.info('Started broker')
 
             yield
 
@@ -62,6 +62,7 @@ def publish_existing_pact(broker):
     source = str(pathlib.Path.cwd().joinpath(TEST_DIR, '..', 'pacts').resolve())
     pacts = [f'{source}:/pacts']
     envs = {
+        # Keep these parameters according to docker-compose.yml
         'PACT_BROKER_BASE_URL': 'http://broker_app:9292',
         'PACT_BROKER_USERNAME': 'pactbroker',
         'PACT_BROKER_PASSWORD': 'pactbroker',
