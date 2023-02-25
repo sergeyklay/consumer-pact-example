@@ -7,11 +7,12 @@
 
 """Pact test for Product service client"""
 
+import atexit
 import logging
 import os
-from pact import Consumer, Like, Provider, Term, Format
+
 import pytest
-import atexit
+from pact import Consumer, Like, Provider
 
 from consumer.product import ProductConsumer
 
