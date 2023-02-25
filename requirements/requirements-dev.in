@@ -6,11 +6,9 @@
 # the LICENSE file that was distributed with this source code
 
 coverage[toml]
-docker
 flake8
 flake8-blind-except
 flake8-import-order
 pact-python
 pylint
 pytest
-testcontainers
