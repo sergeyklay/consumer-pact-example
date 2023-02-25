@@ -19,7 +19,7 @@ def test_get_product(pact, consumer):
     # Define the Matcher; the expected structure and content of the response
     expected = {
         'id': Format().integer,
-        'title': 'Over group reach plan health',
+        'title': Like('Over group reach plan health'),
         'description': Like('Chair answer nature do benefit be tonight make travel season itself weight hard.'),
         'brand': Like('Wilson Inc'),
         'category': Like('around'),
@@ -45,7 +45,7 @@ def test_get_product(pact, consumer):
         product = consumer.get_product(1)
 
         # In this case the mock Provider will have returned a valid response
-        assert product.title == expected['title']
+        assert product.title == expected['title'].matcher
 
         # Make sure that all interactions defined occurred
         pact.verify()

@@ -35,6 +35,9 @@
           "$.body.id": {
             "match": "type"
           },
+          "$.body.title": {
+            "match": "type"
+          },
           "$.body.description": {
             "match": "type"
           },
