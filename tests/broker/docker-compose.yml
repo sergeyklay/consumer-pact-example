@@ -1,22 +1,26 @@
 version: '3.9'
 
 services:
-  # A PostgreSQL database for the Broker to store Pacts and verification results
+
+  # A PostgreSQL database for the Broker to store Pacts
+  # and verification results.
   postgres:
     image: postgres:15
     healthcheck:
-      test: ['CMD-SHELL', "sh -c 'pg_isready -U postgres -d postgres'"]
-      interval: 3s
+      test: [ 'CMD-SHELL', 'pg_isready -d pact -U pact' ]
+      interval: 2s
       timeout: 2s
-      retries: 5
+      retries: 10
     ports:
       - '5432:5432'
-    environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: password
-      POSTGRES_DB: postgres
+    networks:
+      - backend
     volumes:
-      - pgdata:/var/lib/postgresql/data
+      - pact-data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: pact
+      POSTGRES_PASSWORD: secret
+      POSTGRES_DB: pact
 
   # The Pact Broker
   broker_app:
@@ -25,18 +29,20 @@ services:
     #
     # As well as changing the image, the destination port will need to be changed
     # from 9292 below, and in the nginx.conf proxy_pass section
-    image: pactfoundation/pact-broker
+    image: pactfoundation/pact-broker:latest
     ports:
-      - '88:9292'
+      - '9292:9292'
+    networks:
+      - backend
     depends_on:
       postgres:
         condition: service_healthy
-    restart: always
     environment:
-      PACT_BROKER_DATABASE_USERNAME: postgres
-      PACT_BROKER_DATABASE_PASSWORD: password
+      PACT_BROKER_DATABASE_ADAPTER: postgres
+      PACT_BROKER_DATABASE_USERNAME: pact
+      PACT_BROKER_DATABASE_PASSWORD: secret
       PACT_BROKER_DATABASE_HOST: postgres
-      PACT_BROKER_DATABASE_NAME: postgres
+      PACT_BROKER_DATABASE_NAME: pact
       PACT_BROKER_BASIC_AUTH_USERNAME: pactbroker
       PACT_BROKER_BASIC_AUTH_PASSWORD: pactbroker
     # The Pact Broker provides a healthcheck endpoint which we will use to wait
@@ -58,11 +64,17 @@ services:
       - ./ssl:/etc/nginx/ssl
     ports:
       - '8443:443'
-    restart: always
+    networks:
+      - backend
+    restart: unless-stopped
     depends_on:
       broker_app:
         condition: service_healthy
 
+networks:
+  backend:
+    driver: bridge
+
 volumes:
-  pgdata:
+  pact-data:
     driver: local
