@@ -7,12 +7,45 @@
 
 """Pact test for Product service client"""
 
+import atexit
 import logging
 
-from pact import Like, Format
+import pytest
+from pact import Like, Format, Consumer, Provider
+
+from consumer import __version__ as version
 
 logging.basicConfig(level=logging.INFO)
 log = logging.getLogger(__name__)
+
+
+@pytest.fixture(scope='session')
+def pact(mock_opts, pact_dir):
+    """Set up a Pact Consumer, which provides the Provider mock service."""
+    consumer = Consumer('ProductServiceClient', version=version)
+    pact = consumer.has_pact_with(
+        Provider('ProductService'),
+        pact_dir=pact_dir,
+        **mock_opts,
+    )
+
+    pact.start_service()
+
+    # Make sure the Pact mocked provider is stopped when we finish, otherwise
+    # port 1234 may become blocked
+    atexit.register(pact.stop_service)
+
+    yield pact
+
+    # This will stop the Pact mock server, and if publish is True, submit Pacts
+    # to the Pact Broker
+    pact.stop_service()
+
+    # Given we have cleanly stopped the service, we do not want to re-submit the
+    # Pacts to the Pact Broker again atexit, since the Broker may no longer be
+    # available if it has been started using the --run-broker option, as it will
+    # have been torn down at that point
+    pact.publish_to_broker = False
 
 
 def test_get_product(pact, consumer):
