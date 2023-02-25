@@ -31,7 +31,7 @@ services:
     # from 9292 below, and in the nginx.conf proxy_pass section
     image: pactfoundation/pact-broker:latest
     ports:
-      - '9292:9292'
+      - '80:9292'
     networks:
       - backend
     depends_on:
