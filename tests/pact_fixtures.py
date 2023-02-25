@@ -61,36 +61,6 @@ def broker(request):
         return
 
 
-@pytest.fixture(scope='session', autouse=True)
-def publish_existing_pact(broker):
-    source = os.path.join(
-        os.path.dirname(os.path.realpath(__file__)),
-        'pacts'
-    )
-    pacts = [f'{source}:/pacts']
-    envs = {
-        # Keep these parameters according to docker-compose.yml
-        'PACT_BROKER_BASE_URL': 'http://broker_app:9292',
-        'PACT_BROKER_USERNAME': 'pactbroker',
-        'PACT_BROKER_PASSWORD': 'pactbroker',
-    }
-
-    client = docker.from_env()
-
-    log.info('Publishing existing Pact')
-    client.containers.run(
-        remove=True,
-        # See docker-compose.yml for docker network name
-        network='broker_backend',
-        volumes=pacts,
-        image='pactfoundation/pact-cli:latest',
-        environment=envs,
-        command='publish /pacts --consumer-app-version 1',
-    )
-
-    log.info('Finished publishing')
-
-
 @pytest.fixture(scope='session')
 def pact_settings():
     return dict(
@@ -101,7 +71,7 @@ def pact_settings():
             'PACT_BROKER_URL',
             'http://localhost'
         ).rstrip('/'),
-        broker_usernane=os.environ.get(
+        broker_username=os.environ.get(
             'PACT_BROKER_USERNAME',
             'pactbroker'
         ),
@@ -116,11 +86,49 @@ def pact_settings():
             'PACT_MOCK_HOST',
             'localhost'
         ).rstrip('/'),
-        mock_port=int(os.environ.get(
-            'PACT_MOCK_PORT',
-            1234
-        )),
+        mock_port=int(os.environ.get('PACT_MOCK_PORT', 1234)))
+
+
+@pytest.fixture(scope='session', autouse=True)
+def publish_existing_pact(broker, pact_settings):
+    source = os.path.join(
+        os.path.dirname(os.path.realpath(__file__)),
+        'pacts'
     )
+    pacts = [f'{source}:/pacts']
+    envs = {
+        # Keep these parameters according to docker-compose.yml
+        'PACT_BROKER_BASE_URL': 'http://broker_app:9292',
+        'PACT_BROKER_USERNAME': pact_settings['broker_username'],
+        'PACT_BROKER_PASSWORD': pact_settings['broker_password'],
+    }
+
+    client = docker.from_env()
+
+    log.info('Publishing existing Pact')
+
+    # The following code will execute something like this:
+    #
+    #    docker run -ti \
+    #      --rm \
+    #      -v "$(pwd)"/tests/pacts:/pacts \
+    #      -e PACT_BROKER_BASE_URL='http://broker_app:9292' \
+    #      -e PACT_BROKER_USERNAME=pactbroker \
+    #      -e PACT_BROKER_PASSWORD=pactbroker \
+    #      --network broker_backend \
+    #      pactfoundation/pact-cli:latest \
+    #      publish /pacts --consumer-app-version 1
+    #
+    client.containers.run(
+        remove=True,
+        # See docker-compose.yml for docker network name
+        network='broker_backend',
+        volumes=pacts,
+        image='pactfoundation/pact-cli:latest',
+        environment=envs,
+        command='publish /pacts --consumer-app-version 1')
+
+    log.info('Finished publishing')
 
 
 @pytest.fixture(scope='session')
@@ -149,9 +157,8 @@ def pact(request, pact_settings):
         pact_dir=pact_dir,
         publish_to_broker=publish,
         broker_base_url=pact_settings['broker_url'],
-        broker_username=pact_settings['broker_usernane'],
-        broker_password=pact_settings['broker_password'],
-    )
+        broker_username=pact_settings['broker_username'],
+        broker_password=pact_settings['broker_password'])
 
     pact.start_service()
 
