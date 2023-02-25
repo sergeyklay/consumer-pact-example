@@ -1,6 +1,28 @@
 #!/usr/bin/env bash
 
-docker run -ti \
+# This file is part of the Consumer API example.
+#
+# Copyright (C) 2023 Serghei Iakovlev <egrep@protonmail.ch>
+#
+# For the full copyright and license information, please view
+# the LICENSE file that was distributed with this source code.
+
+
+rdctl="${RANCHERCTL:-$(command -v rdctl 2>/dev/null)}"
+containerd_cli=""
+
+# Try to get a suitable container engine (if available)
+if [ -n "${rdctl}" ]; then
+  if $rdctl list-settings | grep -q '"containerEngine": "moby"'; then
+    containerd_cli="${DOCKER:-$(command -v docker 2>/dev/null)}"
+  else
+    containerd_cli="${NERDCTL:-$(command -v nerdctl 2>/dev/null)}"
+  fi
+else
+  containerd_cli="${DOCKER:-$(command -v docker 2>/dev/null)}"
+fi
+
+$containerd_cli run -ti \
   --rm \
   -v "$(pwd)"/tests/pacts:/pacts \
   -e PACT_BROKER_BASE_URL="${PACT_BROKER_BASE_URL:-http://broker_app:9292}" \
