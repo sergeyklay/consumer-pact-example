@@ -87,7 +87,24 @@ def test_get_product(pact, consumer):
     expected = {
     }
 
-    pact.given('Product_X exists')\
-        .upon_receiving('a request for Product_X')\
-        .with_request('get', '/v1/products/1').\
-        will_respond_with(200, body=Like(expected))
+    # Define the expected behaviour of the Provider. This determines how the
+    # Pact mock provider will behave. In this case, we expect a body which is
+    # "Like" the structure defined above. This means the mock provider will
+    # return the EXACT content where defined, e.g. Product_X for title, and
+    # SOME appropriate content e.g. for description.
+    (
+        pact.given('there is a product with ID 1')
+            .upon_receiving('a request for a product')
+            .with_request('get', '/v1/products/1')
+            .will_respond_with(200, body=Like(expected))
+    )
+
+    with pact:
+        # Perform the actual request
+        product = consumer.get_product(1)
+
+        # In this case the mock Provider will have returned a valid response
+        assert product.title == 'Product_X'
+
+        # Make sure that all interactions defined occurred
+        pact.verify()
