@@ -26,8 +26,7 @@
           "price": 1.0,
           "discount": 1.0,
           "rating": 1.0,
-          "stock": 1,
-          "self_url": "http://localhost/v1/products/10"
+          "stock": 1
         },
         "matchingRules": {
           "$.body": {
