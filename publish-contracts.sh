@@ -9,6 +9,5 @@ docker run -ti \
   --network broker_backend \
   pactfoundation/pact-cli:latest \
   publish /pacts \
-    --consumer-app-version="${CONSUMER_VERSION:-1}" \
-    --branch="$(git rev-parse --abbrev-ref HEAD)" \
-    --verbose
+    --consumer-app-version="${CONSUMER_VERSION:-$(python setup.py --version)}" \
+    --branch="$(git rev-parse --abbrev-ref HEAD)"
