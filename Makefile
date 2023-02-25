@@ -1,4 +1,4 @@
-# This file is part of the Contract Testing Example.
+# This file is part of the Consumer API example.
 #
 # Copyright (C) 2023 Serghei Iakovlev <egrep@protonmail.ch>
 #
@@ -121,7 +121,7 @@ maintainer-clean: clean
 
 .PHONY: help
 help:
-	@echo 'Contract Testing Example'
+	@echo 'Consumer API example'
 	@echo
 	@echo 'Run "make init" first to install and update all dev dependencies.'
 	@echo 'See "default.mk" for variables you might want to set.'

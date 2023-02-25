@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 #
-# This file is part of the Contract Testing Example.
+# This file is part of the Consumer API example.
 #
 # Copyright (C) 2023 Serghei Iakovlev <egrep@protonmail.ch>
 #

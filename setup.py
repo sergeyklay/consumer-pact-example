@@ -1,4 +1,4 @@
-# This file is part of the Contract Testing Example.
+# This file is part of the Consumer API example.
 #
 # Copyright (C) 2023 Serghei Iakovlev <egrep@protonmail.ch>
 #
@@ -29,11 +29,11 @@ META_CONTENTS = read_file(META_PATH)
 def long_description():
     """Provide long description for package."""
     contents = (
-        '====================',
-        'API Consumer Example',
-        '====================',
+        '=====================',
+        'Consumer API example',
+        '=====================',
         '',
-        'Sample Products API Consumer for contract testing purpose.',
+        'Sample Consumer API for contract testing purposes.',
     )
 
     return '\n'.join(contents)
@@ -138,10 +138,10 @@ EXTRAS_REQUIRE['develop'] = \
 
 # Project's URLs
 PROJECT_URLS = {
-    'Documentation': 'https://github.com/sergeyklay/contract-testing-example',
-    'Changelog': 'https://github.com/sergeyklay/contract-testing-example/blob/master/CHANGELOG.rst',  # noqa: E501
-    'Bug Tracker': 'https://github.com/sergeyklay/contract-testing-example/issues',  # noqa: E501
-    'Source Code': 'https://github.com/sergeyklay/contract-testing-example',
+    'Documentation': 'https://github.com/sergeyklay/consumer-pact-example',
+    'Changelog': 'https://github.com/sergeyklay/consumer-pact-example/blob/main/CHANGELOG.rst',  # noqa: E501
+    'Bug Tracker': 'https://github.com/sergeyklay/consumer-pact-example/issues',  # noqa: E501
+    'Source Code': 'https://github.com/sergeyklay/consumer-pact-example',
 }
 
 if __name__ == '__main__':
