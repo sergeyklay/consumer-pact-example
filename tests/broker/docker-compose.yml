@@ -34,9 +34,8 @@ services:
       - '80:9292'
     networks:
       - backend
-    depends_on:
-      postgres:
-        condition: service_healthy
+    links:
+      - postgres
     environment:
       PACT_BROKER_DATABASE_ADAPTER: postgres
       PACT_BROKER_DATABASE_USERNAME: pact
