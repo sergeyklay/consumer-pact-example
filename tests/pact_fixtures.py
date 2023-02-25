@@ -5,11 +5,18 @@
 # For the full copyright and license information, please view
 # the LICENSE file that was distributed with this source code.
 
-import pytest
-import pathlib
-import docker
+import logging
 import os
+import pathlib
+
+import docker
+import pytest
 from testcontainers.compose import DockerCompose
+
+logging.basicConfig(level=logging.INFO)
+log = logging.getLogger(__name__)
+
+TEST_DIR = os.path.dirname(os.path.realpath(__file__))
 
 
 # This fixture is to simulate a managed Pact Broker or PactFlow account.
@@ -30,8 +37,8 @@ def broker(request):
 
     if run_broker:
         # Start up the broker using docker-compose
-        print('Starting broker')
-        broker = str(pathlib.Path.cwd().joinpath(os.path.dirname(os.path.realpath(__file__)), 'broker').resolve())
+        log.info('Starting broker')
+        broker = str(pathlib.Path.cwd().joinpath(TEST_DIR, 'broker').resolve())
         with DockerCompose(broker, pull=True) as compose:
             stdout, stderr = compose.get_logs()
             if stderr:
@@ -41,8 +48,8 @@ def broker(request):
 
             yield
 
-            print('Stopping broker')
-        print('Broker stopped')
+            log.info('Stopping broker')
+        log.info('Broker stopped')
     else:
         # Assuming there is a broker available already, docker-compose has been
         # used manually as the --run-broker option has not been provided
@@ -52,7 +59,7 @@ def broker(request):
 
 @pytest.fixture(scope='session', autouse=True)
 def publish_existing_pact(broker):
-    source = str(pathlib.Path.cwd().joinpath('..', 'pacts').resolve())
+    source = str(pathlib.Path.cwd().joinpath(TEST_DIR, '..', 'pacts').resolve())
     pacts = [f'{source}:/pacts']
     envs = {
         'PACT_BROKER_BASE_URL': 'http://broker_app:9292',
@@ -62,7 +69,7 @@ def publish_existing_pact(broker):
 
     client = docker.from_env()
 
-    print('Publishing existing Pact')
+    log.info('Publishing existing Pact')
     client.containers.run(
         remove=True,
         # See docker-compose.yml for docker network name
@@ -73,7 +80,7 @@ def publish_existing_pact(broker):
         command='publish /pacts --consumer-app-version 1',
     )
 
-    print('Finished publishing')
+    log.info('Finished publishing')
 
 
 def pytest_addoption(parser):
