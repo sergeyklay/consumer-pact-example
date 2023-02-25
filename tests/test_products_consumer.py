@@ -119,7 +119,7 @@ def test_get_product(pact, consumer):
         product = consumer.get_product(1)
 
         # In this case the mock Provider will have returned a valid response
-        assert product.title == 'Product_X'
+        assert product.title == expected['title']
 
         # Make sure that all interactions defined occurred
         pact.verify()
