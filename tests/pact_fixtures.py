@@ -7,7 +7,6 @@
 
 import logging
 import os
-import pathlib
 
 import docker
 import pytest
@@ -38,7 +37,10 @@ def broker(request):
     if run_broker:
         # Start up the broker using docker-compose
         log.info('Starting broker')
-        broker = str(pathlib.Path.cwd().joinpath(TEST_DIR, 'broker').resolve())
+        broker = os.path.join(
+            os.path.dirname(os.path.realpath(__file__)),
+            'broker'
+        )
         with DockerCompose(broker, pull=True) as compose:
             stdout, stderr = compose.get_logs()
             if stderr:
@@ -59,7 +61,10 @@ def broker(request):
 
 @pytest.fixture(scope='session', autouse=True)
 def publish_existing_pact(broker):
-    source = str(pathlib.Path.cwd().joinpath(TEST_DIR, '..', 'pacts').resolve())
+    source = os.path.join(
+        os.path.dirname(os.path.realpath(__file__)),
+        'pacts'
+    )
     pacts = [f'{source}:/pacts']
     envs = {
         # Keep these parameters according to docker-compose.yml

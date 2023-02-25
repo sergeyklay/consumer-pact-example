@@ -32,9 +32,6 @@ PACT_BROKER_PASSWORD = 'pactbroker'
 PACT_MOCK_HOST = 'localhost'
 PACT_MOCK_PORT = 1234
 
-# Where to output the JSON Pact files created by any tests
-PACT_DIR = os.path.dirname(os.path.realpath(__file__))
-
 
 @pytest.fixture
 def consumer() -> ProductConsumer:
@@ -53,12 +50,18 @@ def pact(request):
     version = request.config.getoption('--publish-pact')
     publish = True if version else False
 
+    # Where to output the JSON Pact files created by any tests
+    pact_dir = os.path.join(
+        os.path.dirname(os.path.realpath(__file__)),
+        'pacts'
+    )
+
     consumer = Consumer('ProductServiceClient', version=version)
     pact = consumer.has_pact_with(
         Provider('ProductService'),
         host_name=PACT_MOCK_HOST,
         port=PACT_MOCK_PORT,
-        pact_dir=PACT_DIR,
+        pact_dir=pact_dir,
         publish_to_broker=publish,
         broker_base_url=PACT_BROKER_URL,
         broker_username=PACT_BROKER_USERNAME,
