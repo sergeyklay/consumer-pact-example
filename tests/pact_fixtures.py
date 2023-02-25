@@ -65,7 +65,8 @@ def publish_existing_pact(broker):
     print('Publishing existing Pact')
     client.containers.run(
         remove=True,
-        network='broker_default',
+        # See docker-compose.yml for docker network name
+        network='broker_backend',
         volumes=pacts,
         image='pactfoundation/pact-cli:latest',
         environment=envs,
