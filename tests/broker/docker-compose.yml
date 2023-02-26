@@ -1,3 +1,10 @@
+# This file is part of the Consumer API example.
+#
+# Copyright (C) 2023 Serghei Iakovlev <egrep@protonmail.ch>
+#
+# For the full copyright and license information, please view
+# the LICENSE file that was distributed with this source code.
+
 version: '3.9'
 
 services:
@@ -51,17 +58,19 @@ services:
       timeout: 2s
       retries: 10
 
-  # An NGINX reverse proxy in front of the Broker on port 8443, to be able to
-  # terminate with SSL
+  # A Nginx reverse proxy in front of the Broker on port 443, to be able to
+  # terminate with SSL. This will allow to use https://127.0.0.1 from host.
   nginx:
     image: nginx:alpine
     links:
       - broker_app:broker
     volumes:
-      - ./nginx.conf:/etc/nginx/conf.d/default.conf:ro
-      - ./ssl:/etc/nginx/ssl
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf
+      - ./snippets:/etc/nginx/snippets
+      - ./dhparam.pem:/etc/nginx/dhparam.pem
+      - ./ssl:/etc/ssl
     ports:
-      - '8443:443'
+      - '443:443'
     restart: unless-stopped
     depends_on:
       broker_app:
