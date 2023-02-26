@@ -54,3 +54,11 @@ class ProductConsumer:
             description=data['description'],
             price=data['price'],
         )
+
+    def delete_product(self, product_id: int) -> bool:
+        uri = f'{self.base_uri}/{self.API_VERSION}/products/{product_id}'
+        response = requests.delete(uri, timeout=3.0)
+
+        if response.status_code == 204:
+            return True
+        return False
