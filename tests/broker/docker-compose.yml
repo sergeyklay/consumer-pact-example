@@ -30,6 +30,9 @@ services:
     image: pactfoundation/pact-broker:latest
     ports:
       - '80:9292'
+    depends_on:
+      postgres:
+        condition: service_healthy
     links:
       - postgres
     environment:
