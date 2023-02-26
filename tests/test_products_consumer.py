@@ -13,16 +13,14 @@ import logging
 import pytest
 from pact import Like, Format, Consumer, Provider
 
-from consumer import __version__ as version
-
 logging.basicConfig(level=logging.INFO)
 log = logging.getLogger(__name__)
 
 
 @pytest.fixture(scope='session')
-def pact(mock_opts, pact_dir):
+def pact(mock_opts, pact_dir, participant_version):
     """Set up a Pact Consumer, which provides the Provider mock service."""
-    consumer = Consumer('ProductServiceClient', version=version)
+    consumer = Consumer('ProductServiceClient', version=participant_version)
     pact = consumer.has_pact_with(
         Provider('ProductService'),
         pact_dir=pact_dir,
