@@ -7,7 +7,7 @@
   },
   "interactions": [
     {
-      "description": "a request for a product",
+      "description": "a GET request for a product",
       "providerState": "there is a product with ID 1",
       "request": {
         "method": "get",
@@ -58,6 +58,37 @@
           },
           "$.body.stock": {
             "match": "type"
+          }
+        }
+      }
+    },
+    {
+      "description": "a DELETE request for a product",
+      "providerState": "there is no product with ID 7777",
+      "request": {
+        "method": "delete",
+        "path": "/v1/products/7777"
+      },
+      "response": {
+        "status": 404,
+        "headers": {
+        },
+        "body": {
+          "description": "Invalid resource URI.",
+          "status": 404,
+          "title": "Not Found"
+        },
+        "matchingRules": {
+          "$.body": {
+            "match": "type"
+          },
+          "$.body.description": {
+            "match": "regex",
+            "regex": "Invalid resource URI."
+          },
+          "$.body.title": {
+            "match": "regex",
+            "regex": "Not Found"
           }
         }
       }

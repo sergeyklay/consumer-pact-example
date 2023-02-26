@@ -11,7 +11,7 @@ import atexit
 import logging
 
 import pytest
-from pact import Like, Format, Consumer, Provider
+from pact import Like, Format, Consumer, Provider, Term
 
 logging.basicConfig(level=logging.INFO)
 log = logging.getLogger(__name__)
@@ -46,7 +46,7 @@ def pact(mock_opts, pact_dir, participant_version):
     pact.publish_to_broker = False
 
 
-def test_get_product(pact, consumer):
+def test_get_existent_product(pact, consumer):
     # Define the Matcher; the expected structure and content of the response
     expected = {
         'id': Format().integer,
@@ -67,7 +67,7 @@ def test_get_product(pact, consumer):
     # SOME appropriate content e.g. for description.
     (pact
      .given('there is a product with ID 1')
-     .upon_receiving('a request for a product')
+     .upon_receiving('a GET request for a product')
      .with_request('get', '/v1/products/1')
      .will_respond_with(200, body=Like(expected)))
 
@@ -77,6 +77,30 @@ def test_get_product(pact, consumer):
 
         # In this case the mock Provider will have returned a valid response
         assert product.title == expected['title'].matcher
+
+        # Make sure that all interactions defined occurred
+        pact.verify()
+
+
+def test_delete_nonexistent_product(pact, consumer):
+    expected = {
+        'description': Term(r'Invalid resource URI.', 'Invalid resource URI.'),
+        'status': 404,
+        'title': Term(r'Not Found', 'Not Found'),
+    }
+
+    (pact
+     .given('there is no product with ID 7777')
+     .upon_receiving('a DELETE request for a product')
+     .with_request('delete', '/v1/products/7777')
+     .will_respond_with(404, body=Like(expected)))
+
+    with pact:
+        # Perform the actual request
+        status = consumer.delete_product(7777)
+
+        # In this case the mock Provider will have returned a valid response
+        assert status is False
 
         # Make sure that all interactions defined occurred
         pact.verify()
