@@ -13,8 +13,6 @@ services:
       retries: 5
     ports:
       - '5432:5432'
-    networks:
-      - backend
     volumes:
       - pact-data:/var/lib/postgresql/data
     environment:
@@ -32,8 +30,6 @@ services:
     image: pactfoundation/pact-broker:latest
     ports:
       - '80:9292'
-    networks:
-      - backend
     links:
       - postgres
     environment:
@@ -63,16 +59,10 @@ services:
       - ./ssl:/etc/nginx/ssl
     ports:
       - '8443:443'
-    networks:
-      - backend
     restart: unless-stopped
     depends_on:
       broker_app:
         condition: service_healthy
-
-networks:
-  backend:
-    driver: bridge
 
 volumes:
   pact-data:
