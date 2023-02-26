@@ -22,7 +22,13 @@ else
   containerd_cli="${DOCKER:-$(command -v docker 2>/dev/null)}"
 fi
 
-$containerd_cli run -ti \
+# In order for docker to allocate a TTY (the -t option) you already need
+# to be in a TTY when docker run is called.
+# GitHub Actions executes its jobs not in a TTY.
+options='-i'
+test -t 1 && options="-ti"
+
+$containerd_cli run $options \
   --rm \
   -v "$(pwd)"/tests/pacts:/pacts \
   -e PACT_BROKER_BASE_URL="${PACT_BROKER_BASE_URL:-http://broker_app:9292}" \
