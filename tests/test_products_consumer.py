@@ -18,9 +18,9 @@ log = logging.getLogger(__name__)
 
 
 @pytest.fixture(scope='session')
-def pact(mock_opts, pact_dir, participant_version):
+def pact(mock_opts, pact_dir, app_version):
     """Set up a Pact Consumer, which provides the Provider mock service."""
-    consumer = Consumer('ProductServiceClient', version=participant_version)
+    consumer = Consumer('ProductServiceClient', version=app_version)
     pact = consumer.has_pact_with(
         Provider('ProductService'),
         pact_dir=pact_dir,
