@@ -11,5 +11,8 @@ python:
 github_actions:
   - any: ['.github/**/*']
 
+contracts:
+  - any: ['tests/pacts/*.json']
+
 documentation:
   - '*.rst'
