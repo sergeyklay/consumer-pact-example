@@ -71,7 +71,6 @@ services:
       - ./ssl:/etc/ssl
     ports:
       - '443:443'
-    restart: unless-stopped
     depends_on:
       broker_app:
         condition: service_healthy
