@@ -62,3 +62,28 @@ class ProductConsumer:
         if response.status_code == 204:
             return True
         return False
+
+    def get_products(self, params: dict = None) -> Optional[dict]:
+        uri = f'{self.base_uri}/{self.API_VERSION}/products'
+        response = requests.get(uri, params=params, timeout=3.0)
+
+        if response.status_code != 200:
+            return None
+
+        data = response.json()
+        rv = {
+            'links': data['links'],
+            'pagination': data['pagination'],
+            'products': [],
+        }
+
+        for p in data['products']:
+            rv['products'].append(
+                Product(
+                    title=p['title'],
+                    description=p['description'],
+                    price=p['price'],
+                )
+            )
+
+        return rv

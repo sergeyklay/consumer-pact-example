@@ -128,3 +128,42 @@ def test_delete_nonexistent_product(pact, consumer):
 
         # Make sure that all interactions defined occurred
         pact.verify()
+
+
+def test_empty_products_response(pact, consumer):
+    expected = {
+        'links': {
+            'first': Like('http://127.0.0.1:5000/v1/products?page=1&per_page=10'),
+            'last': Like('http://127.0.0.1:5000/v1/products?page=1&per_page=10'),
+            'next': None,
+            'prev': None,
+            'self': Like('http://127.0.0.1:5000/v1/products'),
+        },
+        'pagination': {
+            'page': 1,
+            'pages': 1,
+            'per_page': Format().integer,
+            'total': 0,
+        },
+        'products': [],
+    }
+
+    (pact
+     .given('there are no products')
+     .upon_receiving('a request to get list of products')
+     .with_request('get', '/v1/products')
+     .will_respond_with(200, body=Like(expected)))
+
+    with pact:
+        # Perform the actual request
+        rv = consumer.get_products()
+
+        # In this case the mock Provider will have returned a valid response
+        assert isinstance(rv, dict)
+        assert isinstance(rv['links'], dict)
+        assert isinstance(rv['pagination'], dict)
+        assert isinstance(rv['products'], list)
+        assert len(rv['products']) == 0
+
+        # Make sure that all interactions defined occurred
+        pact.verify()
