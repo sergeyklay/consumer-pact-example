@@ -7,7 +7,7 @@
   },
   "interactions": [
     {
-      "description": "a GET request for a product",
+      "description": "a request for a product",
       "providerState": "there is a product with ID 1",
       "request": {
         "method": "get",
@@ -63,7 +63,7 @@
       }
     },
     {
-      "description": "a DELETE request for a product",
+      "description": "a request to delete a product",
       "providerState": "there is no product with ID 7777",
       "request": {
         "method": "delete",
