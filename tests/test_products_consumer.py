@@ -11,7 +11,7 @@ import atexit
 import logging
 
 import pytest
-from pact import Like, Format, Consumer, Provider, Term
+from pact import Consumer, Format, Like, Provider, Term
 
 logging.basicConfig(level=logging.INFO)
 log = logging.getLogger(__name__)
@@ -39,10 +39,10 @@ def pact(mock_opts, pact_dir, app_version):
     # to the Pact Broker
     pact.stop_service()
 
-    # Given we have cleanly stopped the service, we do not want to re-submit the
-    # Pacts to the Pact Broker again atexit, since the Broker may no longer be
-    # available if it has been started using the --run-broker option, as it will
-    # have been torn down at that point
+    # Given we have cleanly stopped the service, we do not want to re-submit
+    # the Pacts to the Pact Broker again atexit, since the Broker may no longer
+    # be available if it has been started using the --run-broker option, as it
+    # will have been torn down at that point
     pact.publish_to_broker = False
 
 
@@ -51,7 +51,8 @@ def test_get_existent_product(pact, consumer):
     expected = {
         'id': Format().integer,
         'title': Like('Over group reach plan health'),
-        'description': Like('Chair answer nature do benefit be tonight make travel season itself weight hard.'),
+        'description': Like('Chair answer nature do benefit be tonight '
+                            'make travel season itself weight hard.'),
         'brand': Like('Wilson Inc'),
         'category': Like('around'),
         'price': Format().decimal,
@@ -133,8 +134,10 @@ def test_delete_nonexistent_product(pact, consumer):
 def test_empty_products_response(pact, consumer):
     expected = {
         'links': {
-            'first': Like('http://127.0.0.1:5000/v1/products?page=1&per_page=10'),
-            'last': Like('http://127.0.0.1:5000/v1/products?page=1&per_page=10'),
+            'first': Like(
+                'http://127.0.0.1:5000/v1/products?page=1&per_page=10'),
+            'last': Like(
+                'http://127.0.0.1:5000/v1/products?page=1&per_page=10'),
             'next': None,
             'prev': None,
             'self': Like('http://127.0.0.1:5000/v1/products'),
