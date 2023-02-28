@@ -123,6 +123,54 @@
           }
         }
       }
+    },
+    {
+      "description": "a request to get list of products",
+      "providerState": "there are no products",
+      "request": {
+        "method": "get",
+        "path": "/v1/products"
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+        },
+        "body": {
+          "links": {
+            "first": "http://127.0.0.1:5000/v1/products?page=1&per_page=10",
+            "last": "http://127.0.0.1:5000/v1/products?page=1&per_page=10",
+            "next": null,
+            "prev": null,
+            "self": "http://127.0.0.1:5000/v1/products"
+          },
+          "pagination": {
+            "page": 1,
+            "pages": 1,
+            "per_page": 1,
+            "total": 0
+          },
+          "products": [
+
+          ]
+        },
+        "matchingRules": {
+          "$.body": {
+            "match": "type"
+          },
+          "$.body.links.first": {
+            "match": "type"
+          },
+          "$.body.links.last": {
+            "match": "type"
+          },
+          "$.body.links.self": {
+            "match": "type"
+          },
+          "$.body.pagination.per_page": {
+            "match": "type"
+          }
+        }
+      }
     }
   ],
   "metadata": {
