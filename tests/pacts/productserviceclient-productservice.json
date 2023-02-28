@@ -64,10 +64,10 @@
     },
     {
       "description": "a request for a product",
-      "providerState": "there is no product with ID 2",
+      "providerState": "there is no product with ID 7777",
       "request": {
         "method": "get",
-        "path": "/v1/products/2"
+        "path": "/v1/products/7777"
       },
       "response": {
         "status": 404,
