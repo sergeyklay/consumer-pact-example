@@ -82,6 +82,30 @@ def test_get_existent_product(pact, consumer):
         pact.verify()
 
 
+def test_get_nonexistent_product(pact, consumer):
+    expected = {
+        'description': Term(r'Invalid resource URI.', 'Invalid resource URI.'),
+        'status': 404,
+        'title': Term(r'Not Found', 'Not Found'),
+    }
+
+    (pact
+     .given('there is no product with ID 2')
+     .upon_receiving('a request for a product')
+     .with_request('get', '/v1/products/2')
+     .will_respond_with(404, body=Like(expected)))
+
+    with pact:
+        # Perform the actual request
+        status = consumer.get_product(2)
+
+        # In this case the mock Provider will have returned a valid response
+        assert status is None
+
+        # Make sure that all interactions defined occurred
+        pact.verify()
+
+
 def test_delete_nonexistent_product(pact, consumer):
     expected = {
         'description': Term(r'Invalid resource URI.', 'Invalid resource URI.'),
