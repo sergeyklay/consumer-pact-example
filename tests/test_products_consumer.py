@@ -67,7 +67,7 @@ def test_get_existent_product(pact, consumer):
     # SOME appropriate content e.g. for description.
     (pact
      .given('there is a product with ID 1')
-     .upon_receiving('a GET request for a product')
+     .upon_receiving('a request for a product')
      .with_request('get', '/v1/products/1')
      .will_respond_with(200, body=Like(expected)))
 
@@ -91,7 +91,7 @@ def test_delete_nonexistent_product(pact, consumer):
 
     (pact
      .given('there is no product with ID 7777')
-     .upon_receiving('a DELETE request for a product')
+     .upon_receiving('a request to delete a product')
      .with_request('delete', '/v1/products/7777')
      .will_respond_with(404, body=Like(expected)))
 
