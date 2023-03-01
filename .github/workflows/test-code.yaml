@@ -5,7 +5,7 @@
 # For the full copyright and license information, please view
 # the LICENSE file that was distributed with this source code.
 
-name: Lint Code
+name: Unit Tests
 
 on:
   push:
@@ -21,8 +21,8 @@ on:
       - main
 
 jobs:
-  lint-code:
-    name: Lint Code
+  tests:
+    name: Test Consumer
     runs-on: ubuntu-latest
 
     steps:
@@ -48,5 +48,14 @@ jobs:
       - name: Install dependencies
         run: make install
 
-      - name: Python code linting
-        run: make lint
+      - name: Run unit tests with coverage
+        run: make test
+
+      - name: Combine coverage reports
+        run: make ccov
+
+      - uses: codecov/codecov-action@v3
+        if: success()
+        with:
+          fail_ci_if_error: true
+          verbose: true
