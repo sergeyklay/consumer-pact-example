@@ -23,12 +23,6 @@ else
   containerd_cli="${DOCKER:-$(command -v docker 2>/dev/null)}"
 fi
 
-# In order for docker to allocate a TTY (the -t option) you already need
-# to be in a TTY when docker run is called. GitHub Actions executes its jobs
-# not in a TTY.
-options='-i'
-test -t 1 && options="-ti"
-
 # To get the most out of the Pact Broker, it should either be the git sha
 # (or equivalent for your repository), be a git tag name, or it should
 # include the git sha or tag name as metadata if you are using semantic
@@ -39,7 +33,7 @@ test -t 1 && options="-ti"
 app_version="$(python setup.py --version)"
 app_version+="+$(git -C "$root_dir" rev-parse --short HEAD)"
 
-$containerd_cli run $options \
+$containerd_cli run \
   --rm \
   -v "$(pwd)"/tests/pacts:/pacts \
   -e PACT_BROKER_BASE_URL="${PACT_BROKER_BASE_URL:-http://broker_app:9292}" \
