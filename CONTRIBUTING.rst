@@ -87,6 +87,7 @@ usage is:
 
    $ npm install -g commitizen
    $ npm install -g cz-conventional-changelog
+   $ echo '{ "path": "cz-conventional-changelog" }' >| ~/.czrc
 
 When you commit with Commitizen, you'll be prompted to fill out any required
 commit fields at commit time. Simply use ``git cz`` or just ``cz`` instead of
