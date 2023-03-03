@@ -71,6 +71,31 @@ changes you submit.
 **By submitting a patch, you agree to allow the project owner to license your
 work under the same license as that used by the project.**
 
+Commit messages
+---------------
+
+Consumer API Example is adopting the
+`Conventional Commits <https://www.conventionalcommits.org>`_ convention.
+Please ensure you follow the guidelines.
+
+Take a look at the git history (``git log``) to get the gist of it.
+
+If you'd like to get some CLI assistance there is a node npm package. Example
+usage is:
+
+.. code-block:: console
+
+   $ npm install -g commitizen
+   $ npm install -g cz-conventional-changelog
+
+When you commit with Commitizen, you'll be prompted to fill out any required
+commit fields at commit time. Simply use ``git cz`` or just ``cz`` instead of
+``git commit`` when committing. You can also use ``git-cz``, which is an alias
+for ``cz``.
+
+
+See https://www.npmjs.com/package/commitizen for more info.
+
 Resources
 ---------
 
