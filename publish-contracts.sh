@@ -42,5 +42,8 @@ $containerd_cli run \
   --network "${BROKER_NETWORK:-broker_default}" \
   pactfoundation/pact-cli:latest \
   publish /pacts \
+    --tag release-42 \
+    --tag feature-N \
+    --tag team-A \
     --consumer-app-version="$app_version" \
     --branch="$(git -C "$root_dir" rev-parse --abbrev-ref HEAD)"
