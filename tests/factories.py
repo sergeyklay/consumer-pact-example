@@ -8,7 +8,7 @@
 """Providing various factories for testing purposes."""
 
 import factory
-from pact import Term
+from pact import Format, Like, Term
 
 
 def url_term(path: str, generate: str):
@@ -34,3 +34,29 @@ class LinksFactory(factory.DictFactory):
     next = None
     prev = None
     self = None
+
+
+class HeadersFactory(factory.DictFactory):
+    class Meta:
+        rename = {
+            'content_type': 'Content-Type',
+            'etag': 'ETag',
+        }
+
+    content_type = 'application/json'
+    etag = Term(
+        '(?:W/)?"(?:[ !#-\x7E\x80-\xFF]*|\r\n[\t ]|\\.)*"',
+        '"a36c1fae7588366925a982e9a026b1d9"',
+    )
+
+
+class ProductFactory(factory.DictFactory):
+    id = Format().integer
+    title = Like('Some product title')
+    description = Like('Some product description')
+    brand = Like('Green PLC')
+    category = Like('financial')
+    price = Format().decimal
+    discount = Format().decimal
+    rating = Format().decimal
+    stock = Format().integer
