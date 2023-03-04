@@ -16,6 +16,7 @@
       "response": {
         "status": 200,
         "headers": {
+          "Content-Type": "application/json"
         },
         "body": {
           "id": 1,
@@ -29,13 +30,7 @@
           "stock": 1
         },
         "matchingRules": {
-          "$.body": {
-            "match": "type"
-          },
           "$.body.id": {
-            "match": "type"
-          },
-          "$.body.title": {
             "match": "type"
           },
           "$.body.description": {
@@ -72,6 +67,7 @@
       "response": {
         "status": 404,
         "headers": {
+          "Content-Type": "application/json"
         },
         "body": {
           "description": "Invalid resource URI.",
@@ -79,9 +75,6 @@
           "title": "Not Found"
         },
         "matchingRules": {
-          "$.body": {
-            "match": "type"
-          },
           "$.body.description": {
             "match": "regex",
             "regex": "Invalid resource URI."
@@ -103,6 +96,7 @@
       "response": {
         "status": 404,
         "headers": {
+          "Content-Type": "application/json"
         },
         "body": {
           "description": "Invalid resource URI.",
@@ -110,9 +104,6 @@
           "title": "Not Found"
         },
         "matchingRules": {
-          "$.body": {
-            "match": "type"
-          },
           "$.body.description": {
             "match": "regex",
             "regex": "Invalid resource URI."
@@ -134,6 +125,7 @@
       "response": {
         "status": 200,
         "headers": {
+          "Content-Type": "application/json"
         },
         "body": {
           "links": {
@@ -154,9 +146,6 @@
           ]
         },
         "matchingRules": {
-          "$.body": {
-            "match": "type"
-          },
           "$.body.links.first": {
             "match": "type"
           },
@@ -180,6 +169,7 @@
       "response": {
         "status": 200,
         "headers": {
+          "Content-Type": "application/json",
           "ETag": "\"a36c1fae7588366925a982e9a026b1d9\""
         },
         "body": {
@@ -293,6 +283,7 @@
       "response": {
         "status": 200,
         "headers": {
+          "Content-Type": "application/json",
           "ETag": "\"a36c1fae7588366925a982e9a026b1d9\""
         },
         "body": {

@@ -50,9 +50,9 @@ def pact(mock_opts, pact_dir, app_version):
 
 def test_get_existent_product(pact, consumer):
     # Define the Matcher; the expected structure and content of the response
-    expected = {
+    expected_body = {
         'id': Format().integer,
-        'title': Like('Over group reach plan health'),
+        'title': 'Over group reach plan health',
         'description': Like('Chair answer nature do benefit be tonight '
                             'make travel season itself weight hard.'),
         'brand': Like('Wilson Inc'),
@@ -62,41 +62,47 @@ def test_get_existent_product(pact, consumer):
         'rating': Format().decimal,
         'stock': Format().integer,
     }
+    expected_headers = {
+        'Content-Type': 'application/json',
+    }
 
     # Define the expected behaviour of the Provider. This determines how the
     # Pact mock provider will behave. In this case, we expect a body which is
     # "Like" the structure defined above. This means the mock provider will
-    # return the EXACT content where defined, e.g. Product_X for title, and
-    # SOME appropriate content e.g. for description.
+    # return the EXACT content where defined, e.g. 'Over group reach plan
+    # health' for title, and SOME appropriate content e.g. for price.
     (pact
      .given('there is a product with ID 1')
      .upon_receiving('a request for a product')
      .with_request('get', '/v1/products/1')
-     .will_respond_with(200, body=Like(expected)))
+     .will_respond_with(200, body=expected_body, headers=expected_headers))
 
     with pact:
         # Perform the actual request
         product = consumer.get_product(1)
 
         # In this case the mock Provider will have returned a valid response
-        assert product.title == expected['title'].matcher
+        assert product.title == expected_body['title']
 
         # Make sure that all interactions defined occurred
         pact.verify()
 
 
 def test_get_nonexistent_product(pact, consumer):
-    expected = {
+    expected_body = {
         'description': Term(r'Invalid resource URI.', 'Invalid resource URI.'),
         'status': 404,
         'title': Term(r'Not Found', 'Not Found'),
+    }
+    expected_headers = {
+        'Content-Type': 'application/json',
     }
 
     (pact
      .given('there is no product with ID 7777')
      .upon_receiving('a request for a product')
      .with_request('get', '/v1/products/7777')
-     .will_respond_with(404, body=Like(expected)))
+     .will_respond_with(404, body=expected_body, headers=expected_headers))
 
     with pact:
         # Perform the actual request
@@ -110,17 +116,20 @@ def test_get_nonexistent_product(pact, consumer):
 
 
 def test_delete_nonexistent_product(pact, consumer):
-    expected = {
+    expected_body = {
         'description': Term(r'Invalid resource URI.', 'Invalid resource URI.'),
         'status': 404,
         'title': Term(r'Not Found', 'Not Found'),
+    }
+    expected_headers = {
+        'Content-Type': 'application/json',
     }
 
     (pact
      .given('there is no product with ID 7777')
      .upon_receiving('a request to delete a product')
      .with_request('delete', '/v1/products/7777')
-     .will_respond_with(404, body=Like(expected)))
+     .will_respond_with(404, body=expected_body, headers=expected_headers))
 
     with pact:
         # Perform the actual request
@@ -135,7 +144,7 @@ def test_delete_nonexistent_product(pact, consumer):
 
 def test_empty_products_response(pact, consumer):
     first = Like('http://127.0.0.1:5000/v1/products?page=1&per_page=10')
-    expected = {
+    expected_body = {
         'links': {
             'first': first,
             'last': first,
@@ -151,12 +160,15 @@ def test_empty_products_response(pact, consumer):
         },
         'products': [],
     }
+    expected_headers = {
+        'Content-Type': 'application/json',
+    }
 
     (pact
      .given('there are no products')
      .upon_receiving('a request to get list of products')
      .with_request('get', '/v1/products')
-     .will_respond_with(200, body=Like(expected)))
+     .will_respond_with(200, body=expected_body, headers=expected_headers))
 
     with pact:
         # Perform the actual request
@@ -201,9 +213,11 @@ def test_expanded_products_response(pact, consumer):
             'stock': Format().integer,
         }, minimum=3)}
     expected_headers = {
+        'Content-Type': 'application/json',
         'ETag': Term(
             '(?:W/)?"(?:[ !#-\x7E\x80-\xFF]*|\r\n[\t ]|\\.)*"',
-            '"a36c1fae7588366925a982e9a026b1d9"')}
+            '"a36c1fae7588366925a982e9a026b1d9"')
+    }
 
     (pact
      .given('there are few products')
@@ -247,9 +261,11 @@ def test_collapsed_products_response(pact, consumer):
         'products': EachLike(
             'http://127.0.0.1:5000/v1/products/1', minimum=3)}
     expected_headers = {
+        'Content-Type': 'application/json',
         'ETag': Term(
             '(?:W/)?"(?:[ !#-\x7E\x80-\xFF]*|\r\n[\t ]|\\.)*"',
-            '"a36c1fae7588366925a982e9a026b1d9"')}
+            '"a36c1fae7588366925a982e9a026b1d9"')
+    }
 
     (pact
      .given('there are few products')
