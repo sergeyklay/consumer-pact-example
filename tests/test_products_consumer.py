@@ -19,6 +19,17 @@ logging.basicConfig(level=logging.INFO)
 log = logging.getLogger(__name__)
 
 
+def _url(path: str, generate: str):
+    """Create URL pattern for matching with server response.
+
+    For demonstration purposes, it can be moderately simple and not
+    cover all possibilities."""
+    return Term(
+        r'https?://[-a-zA-Z0-9@:%._\+~#=]{1,256}' + path,
+        generate,
+    )
+
+
 @pytest.fixture(scope='session')
 def pact(mock_opts, pact_dir, app_version):
     """Set up a Pact Consumer, which provides the Provider mock service."""
@@ -143,14 +154,17 @@ def test_delete_nonexistent_product(pact, consumer):
 
 
 def test_empty_products_response(pact, consumer):
-    first = Like('http://127.0.0.1:5000/v1/products?page=1&per_page=10')
+    first = _url(
+        r'/v1/products\?page=1&per_page=10',
+        'https://example.com/v1/products?page=1&per_page=10'
+    )
     expected_body = {
         'links': {
             'first': first,
             'last': first,
             'next': None,
             'prev': None,
-            'self': Like('http://127.0.0.1:5000/v1/products'),
+            'self': _url('/v1/products', 'https://example.com/v1/products'),
         },
         'pagination': {
             'page': 1,
@@ -186,14 +200,20 @@ def test_empty_products_response(pact, consumer):
 
 
 def test_expanded_products_response(pact, consumer):
-    first = Like('http://127.0.0.1:5000/v1/products?page=1&per_page=10')
+    first = _url(
+        r'/v1/products\?page=1&per_page=10&expanded=1',
+        'https://example.com/v1/products?page=1&per_page=10&expanded=1'
+    )
     expected_body = {
         'links': {
             'first': first,
             'last': first,
             'next': None,
             'prev': None,
-            'self': Like('http://127.0.0.1:5000/v1/products'),
+            'self': _url(
+                r'/v1/products\?expanded=1',
+                'https://example.com/v1/products?expanded=1',
+            ),
         },
         'pagination': {
             'page': 1,
@@ -216,7 +236,8 @@ def test_expanded_products_response(pact, consumer):
         'Content-Type': 'application/json',
         'ETag': Term(
             '(?:W/)?"(?:[ !#-\x7E\x80-\xFF]*|\r\n[\t ]|\\.)*"',
-            '"a36c1fae7588366925a982e9a026b1d9"')
+            '"a36c1fae7588366925a982e9a026b1d9"',
+        )
     }
 
     (pact
@@ -243,14 +264,20 @@ def test_expanded_products_response(pact, consumer):
 
 
 def test_collapsed_products_response(pact, consumer):
-    first = Like('http://127.0.0.1:5000/v1/products?page=1&per_page=10')
+    first = _url(
+        r'/v1/products\?page=1&per_page=10',
+        'https://example.com/v1/products?page=1&per_page=10'
+    )
     expected_body = {
         'links': {
             'first': first,
             'last': first,
             'next': None,
             'prev': None,
-            'self': Like('http://127.0.0.1:5000/v1/products'),
+            'self': _url(
+                r'/v1/products\?expanded=0',
+                'https://example.com/v1/products?expanded=0',
+            ),
         },
         'pagination': {
             'page': 1,
@@ -259,12 +286,16 @@ def test_collapsed_products_response(pact, consumer):
             'total': 3,
         },
         'products': EachLike(
-            'http://127.0.0.1:5000/v1/products/1', minimum=3)}
+            _url('/v1/products/[0-9]+', 'https://example.com/v1/products/1'),
+            minimum=3
+        )
+    }
     expected_headers = {
         'Content-Type': 'application/json',
         'ETag': Term(
             '(?:W/)?"(?:[ !#-\x7E\x80-\xFF]*|\r\n[\t ]|\\.)*"',
-            '"a36c1fae7588366925a982e9a026b1d9"')
+            '"a36c1fae7588366925a982e9a026b1d9"',
+        )
     }
 
     (pact
