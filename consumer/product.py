@@ -78,12 +78,15 @@ class ProductConsumer:
         }
 
         for p in data['products']:
-            rv['products'].append(
-                Product(
-                    title=p['title'],
-                    description=p['description'],
-                    price=p['price'],
+            if params and 'expanded' in params and params['expanded'] == 0:
+                rv['products'].append(p)
+            else:
+                rv['products'].append(
+                    Product(
+                        title=p['title'],
+                        description=p['description'],
+                        price=p['price'],
+                    )
                 )
-            )
 
         return rv

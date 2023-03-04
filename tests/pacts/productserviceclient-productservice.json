@@ -146,7 +146,7 @@
           "pagination": {
             "page": 1,
             "pages": 1,
-            "per_page": 1,
+            "per_page": 10,
             "total": 0
           },
           "products": [
@@ -164,9 +164,6 @@
             "match": "type"
           },
           "$.body.links.self": {
-            "match": "type"
-          },
-          "$.body.pagination.per_page": {
             "match": "type"
           }
         }
@@ -196,8 +193,8 @@
           "pagination": {
             "page": 1,
             "pages": 1,
-            "per_page": 1,
-            "total": 1
+            "per_page": 10,
+            "total": 10
           },
           "products": [
             {
@@ -238,12 +235,6 @@
           "$.body.links.self": {
             "match": "type"
           },
-          "$.body.pagination.per_page": {
-            "match": "type"
-          },
-          "$.body.pagination.total": {
-            "match": "type"
-          },
           "$.body.products": {
             "min": 2
           },
@@ -275,6 +266,61 @@
             "match": "type"
           },
           "$.body.products[*].stock": {
+            "match": "type"
+          }
+        }
+      }
+    },
+    {
+      "description": "a request to get collapsed list of products",
+      "providerState": "there are few products",
+      "request": {
+        "method": "get",
+        "path": "/v1/products",
+        "query": "expanded=0"
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "ETag": "\"a36c1fae7588366925a982e9a026b1d9\""
+        },
+        "body": {
+          "links": {
+            "first": "http://127.0.0.1:5000/v1/products?page=1&per_page=10",
+            "last": "http://127.0.0.1:5000/v1/products?page=1&per_page=10",
+            "next": null,
+            "prev": null,
+            "self": "http://127.0.0.1:5000/v1/products"
+          },
+          "pagination": {
+            "page": 1,
+            "pages": 1,
+            "per_page": 10,
+            "total": 10
+          },
+          "products": [
+            "http://127.0.0.1:5000/v1/products/1",
+            "http://127.0.0.1:5000/v1/products/1"
+          ]
+        },
+        "matchingRules": {
+          "$.headers.ETag": {
+            "match": "regex",
+            "regex": "(?:W\\/)?\"(?:[ !#-~\\u0080-\\u00FF]*|\r\n[\t ]|\\.)*\""
+          },
+          "$.body.links.first": {
+            "match": "type"
+          },
+          "$.body.links.last": {
+            "match": "type"
+          },
+          "$.body.links.self": {
+            "match": "type"
+          },
+          "$.body.products": {
+            "min": 2
+          },
+          "$.body.products[*].*": {
             "match": "type"
           }
         }

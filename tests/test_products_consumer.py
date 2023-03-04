@@ -134,12 +134,11 @@ def test_delete_nonexistent_product(pact, consumer):
 
 
 def test_empty_products_response(pact, consumer):
+    first = Like('http://127.0.0.1:5000/v1/products?page=1&per_page=10')
     expected = {
         'links': {
-            'first': Like(
-                'http://127.0.0.1:5000/v1/products?page=1&per_page=10'),
-            'last': Like(
-                'http://127.0.0.1:5000/v1/products?page=1&per_page=10'),
+            'first': first,
+            'last': first,
             'next': None,
             'prev': None,
             'self': Like('http://127.0.0.1:5000/v1/products'),
@@ -147,7 +146,7 @@ def test_empty_products_response(pact, consumer):
         'pagination': {
             'page': 1,
             'pages': 1,
-            'per_page': Format().integer,
+            'per_page': 10,
             'total': 0,
         },
         'products': [],
@@ -175,12 +174,11 @@ def test_empty_products_response(pact, consumer):
 
 
 def test_expanded_products_response(pact, consumer):
+    first = Like('http://127.0.0.1:5000/v1/products?page=1&per_page=10')
     expected_body = {
         'links': {
-            'first': Like(
-                'http://127.0.0.1:5000/v1/products?page=1&per_page=10'),
-            'last': Like(
-                'http://127.0.0.1:5000/v1/products?page=1&per_page=10'),
+            'first': first,
+            'last': first,
             'next': None,
             'prev': None,
             'self': Like('http://127.0.0.1:5000/v1/products'),
@@ -188,8 +186,8 @@ def test_expanded_products_response(pact, consumer):
         'pagination': {
             'page': 1,
             'pages': 1,
-            'per_page': Format().integer,
-            'total': Format().integer,
+            'per_page': 10,
+            'total': 10,
         },
         'products': EachLike({
             'id': Format().integer,
@@ -225,6 +223,52 @@ def test_expanded_products_response(pact, consumer):
         assert len(rv['products']) > 1
         assert isinstance(rv['products'][0], Product)
         assert isinstance(rv['products'][1], Product)
+
+        # Make sure that all interactions defined occurred
+        pact.verify()
+
+
+def test_collapsed_products_response(pact, consumer):
+    first = Like('http://127.0.0.1:5000/v1/products?page=1&per_page=10')
+    expected_body = {
+        'links': {
+            'first': first,
+            'last': first,
+            'next': None,
+            'prev': None,
+            'self': Like('http://127.0.0.1:5000/v1/products'),
+        },
+        'pagination': {
+            'page': 1,
+            'pages': 1,
+            'per_page': 10,
+            'total': 10,
+        },
+        'products': EachLike(
+            'http://127.0.0.1:5000/v1/products/1', minimum=2)}
+    expected_headers = {
+        'ETag': Term(
+            '(?:W/)?"(?:[ !#-\x7E\x80-\xFF]*|\r\n[\t ]|\\.)*"',
+            '"a36c1fae7588366925a982e9a026b1d9"')}
+
+    (pact
+     .given('there are few products')
+     .upon_receiving('a request to get collapsed list of products')
+     .with_request('get', '/v1/products', query={'expanded': '0'})
+     .will_respond_with(200, body=expected_body, headers=expected_headers))
+
+    with pact:
+        # Perform the actual request
+        rv = consumer.get_products(params={'expanded': 0})
+
+        # In this case the mock Provider will have returned a valid response
+        assert isinstance(rv, dict)
+        assert isinstance(rv['links'], dict)
+        assert isinstance(rv['pagination'], dict)
+        assert isinstance(rv['products'], list)
+        assert len(rv['products']) > 1
+        assert isinstance(rv['products'][0], str)
+        assert isinstance(rv['products'][1], str)
 
         # Make sure that all interactions defined occurred
         pact.verify()
