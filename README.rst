@@ -60,6 +60,8 @@ Prerequisites
 What kind of things you need to install on your workstation to start:
 
 * Python >= 3.11
+* Docker / Rancher
+* Docker Compose / Rancher Compose
 
 Installing
 ----------
