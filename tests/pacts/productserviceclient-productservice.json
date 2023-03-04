@@ -135,8 +135,8 @@
         },
         "body": {
           "links": {
-            "first": "https://example.com/v1/products?page=1&per_page=10",
-            "last": "https://example.com/v1/products?page=1&per_page=10",
+            "first": "https://example.com/v1/products?page=1&per_page=10&expanded=0",
+            "last": "https://example.com/v1/products?page=1&per_page=10&expanded=0",
             "next": null,
             "prev": null,
             "self": "https://example.com/v1/products"
@@ -158,11 +158,11 @@
           },
           "$.body.links.first": {
             "match": "regex",
-            "regex": "https?:\\/\\/[-a-zA-Z0-9@:%._\\+~#=]{1,256}\\/v1\\/products\\?page=1&per_page=10"
+            "regex": "https?:\\/\\/[-a-zA-Z0-9@:%._\\+~#=]{1,256}\\/v1\\/products\\?page=1&per_page=10&expanded=0"
           },
           "$.body.links.last": {
             "match": "regex",
-            "regex": "https?:\\/\\/[-a-zA-Z0-9@:%._\\+~#=]{1,256}\\/v1\\/products\\?page=1&per_page=10"
+            "regex": "https?:\\/\\/[-a-zA-Z0-9@:%._\\+~#=]{1,256}\\/v1\\/products\\?page=1&per_page=10&expanded=0"
           },
           "$.body.links.self": {
             "match": "regex",
@@ -304,8 +304,8 @@
         },
         "body": {
           "links": {
-            "first": "https://abc.cde/v1/products?page=1&per_page=10",
-            "last": "https://abc.cde/v1/products?page=1&per_page=10",
+            "first": "https://abc.cde/v1/products?page=1&per_page=10&expanded=0",
+            "last": "https://abc.cde/v1/products?page=1&per_page=10&expanded=0",
             "next": null,
             "prev": null,
             "self": "https://abc.cde/v1/products?expanded=0"
@@ -329,11 +329,11 @@
           },
           "$.body.links.first": {
             "match": "regex",
-            "regex": "https?:\\/\\/[-a-zA-Z0-9@:%._\\+~#=]{1,256}\\/v1\\/products\\?page=1&per_page=10"
+            "regex": "https?:\\/\\/[-a-zA-Z0-9@:%._\\+~#=]{1,256}\\/v1\\/products\\?page=1&per_page=10&expanded=0"
           },
           "$.body.links.last": {
             "match": "regex",
-            "regex": "https?:\\/\\/[-a-zA-Z0-9@:%._\\+~#=]{1,256}\\/v1\\/products\\?page=1&per_page=10"
+            "regex": "https?:\\/\\/[-a-zA-Z0-9@:%._\\+~#=]{1,256}\\/v1\\/products\\?page=1&per_page=10&expanded=0"
           },
           "$.body.links.self": {
             "match": "regex",
