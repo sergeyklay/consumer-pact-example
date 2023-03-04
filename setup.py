@@ -122,6 +122,7 @@ EXTRAS_REQUIRE = {
     # Dependencies that are required to run tests
     'testing': [
         'coverage[toml]>=6.0',  # Code coverage measurement for Python
+        'factory_boy>=3.2.0',  # A versatile test fixtures replacement
         'flake8-blind-except>=0.2.0',  # Checks for blind except: statements
         'flake8-import-order>=0.18.1',  # Checks the ordering of imports
         'flake8>=6.0.0',  # The modular source code checker

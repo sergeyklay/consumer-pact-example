@@ -14,6 +14,7 @@ import pytest
 from pact import Consumer, EachLike, Format, Like, Provider, Term
 
 from consumer.product import Product
+from .factories import LinksFactory, PaginationFactory, url_term
 
 logging.basicConfig(level=logging.INFO)
 log = logging.getLogger(__name__)
@@ -154,24 +155,14 @@ def test_delete_nonexistent_product(pact, consumer):
 
 
 def test_empty_products_response(pact, consumer):
-    first = _url(
+    first = url_term(
         r'/v1/products\?page=1&per_page=10',
         'https://example.com/v1/products?page=1&per_page=10'
     )
+    self = url_term('/v1/products', 'https://example.com/v1/products')
     expected_body = {
-        'links': {
-            'first': first,
-            'last': first,
-            'next': None,
-            'prev': None,
-            'self': _url('/v1/products', 'https://example.com/v1/products'),
-        },
-        'pagination': {
-            'page': 1,
-            'pages': 1,
-            'per_page': 10,
-            'total': 0,
-        },
+        'links': LinksFactory(first=first, last=first, self=self),
+        'pagination': PaginationFactory(total=0),
         'products': [],
     }
     expected_headers = {
@@ -200,27 +191,17 @@ def test_empty_products_response(pact, consumer):
 
 
 def test_expanded_products_response(pact, consumer):
-    first = _url(
+    first = url_term(
         r'/v1/products\?page=1&per_page=10&expanded=1',
         'https://example.com/v1/products?page=1&per_page=10&expanded=1'
     )
+    self = url_term(
+        r'/v1/products\?expanded=1',
+        'https://example.com/v1/products?expanded=1',
+    )
     expected_body = {
-        'links': {
-            'first': first,
-            'last': first,
-            'next': None,
-            'prev': None,
-            'self': _url(
-                r'/v1/products\?expanded=1',
-                'https://example.com/v1/products?expanded=1',
-            ),
-        },
-        'pagination': {
-            'page': 1,
-            'pages': 1,
-            'per_page': 10,
-            'total': 3,
-        },
+        'links': LinksFactory(first=first, last=first, self=self),
+        'pagination': PaginationFactory(),
         'products': EachLike({
             'id': Format().integer,
             'title': Like('Some product title'),
@@ -264,29 +245,19 @@ def test_expanded_products_response(pact, consumer):
 
 
 def test_collapsed_products_response(pact, consumer):
-    first = _url(
+    first = url_term(
         r'/v1/products\?page=1&per_page=10',
-        'https://example.com/v1/products?page=1&per_page=10'
+        'https://abc.cde/v1/products?page=1&per_page=10'
+    )
+    self = url_term(
+        r'/v1/products\?expanded=0',
+        'https://abc.cde/v1/products?expanded=0',
     )
     expected_body = {
-        'links': {
-            'first': first,
-            'last': first,
-            'next': None,
-            'prev': None,
-            'self': _url(
-                r'/v1/products\?expanded=0',
-                'https://example.com/v1/products?expanded=0',
-            ),
-        },
-        'pagination': {
-            'page': 1,
-            'pages': 1,
-            'per_page': 10,
-            'total': 3,
-        },
+        'links': LinksFactory(first=first, last=first, self=self),
+        'pagination': PaginationFactory(),
         'products': EachLike(
-            _url('/v1/products/[0-9]+', 'https://example.com/v1/products/1'),
+            url_term('/v1/products/[0-9]+', 'https://abc.cde/v1/products/1'),
             minimum=3
         )
     }
