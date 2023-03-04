@@ -27,6 +27,9 @@ This project uses:
 
 .. teaser-end
 
+.. image:: https://raw.githubusercontent.com/sergeyklay/consumer-pact-example/main/cdc-example.png
+  :alt: Interaction diagram
+
 Consumer
 ========
 
