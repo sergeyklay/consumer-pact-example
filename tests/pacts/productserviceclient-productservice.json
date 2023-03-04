@@ -16,20 +16,25 @@
       "response": {
         "status": 200,
         "headers": {
-          "Content-Type": "application/json"
+          "Content-Type": "application/json",
+          "ETag": "\"a36c1fae7588366925a982e9a026b1d9\""
         },
         "body": {
           "id": 1,
           "title": "product0",
-          "description": "Chair answer nature do benefit be tonight make travel season itself weight hard.",
-          "brand": "Wilson Inc",
-          "category": "around",
+          "description": "Some product description",
+          "brand": "Green PLC",
+          "category": "financial",
           "price": 1.0,
           "discount": 1.0,
           "rating": 1.0,
           "stock": 1
         },
         "matchingRules": {
+          "$.headers.ETag": {
+            "match": "regex",
+            "regex": "(?:W\\/)?\"(?:[ !#-~\\u0080-\\u00FF]*|\r\n[\t ]|\\.)*\""
+          },
           "$.body.id": {
             "match": "type"
           },
@@ -125,7 +130,8 @@
       "response": {
         "status": 200,
         "headers": {
-          "Content-Type": "application/json"
+          "Content-Type": "application/json",
+          "ETag": "\"a36c1fae7588366925a982e9a026b1d9\""
         },
         "body": {
           "links": {
@@ -146,6 +152,10 @@
           ]
         },
         "matchingRules": {
+          "$.headers.ETag": {
+            "match": "regex",
+            "regex": "(?:W\\/)?\"(?:[ !#-~\\u0080-\\u00FF]*|\r\n[\t ]|\\.)*\""
+          },
           "$.body.links.first": {
             "match": "regex",
             "regex": "https?:\\/\\/[-a-zA-Z0-9@:%._\\+~#=]{1,256}\\/v1\\/products\\?page=1&per_page=10"
