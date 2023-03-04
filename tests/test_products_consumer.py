@@ -199,7 +199,7 @@ def test_expanded_products_response(pact, consumer):
             'discount': Format().decimal,
             'rating': Format().decimal,
             'stock': Format().integer,
-        }, minimum=2)}
+        }, minimum=3)}
     expected_headers = {
         'ETag': Term(
             '(?:W/)?"(?:[ !#-\x7E\x80-\xFF]*|\r\n[\t ]|\\.)*"',
@@ -245,7 +245,7 @@ def test_collapsed_products_response(pact, consumer):
             'total': 3,
         },
         'products': EachLike(
-            'http://127.0.0.1:5000/v1/products/1', minimum=2)}
+            'http://127.0.0.1:5000/v1/products/1', minimum=3)}
     expected_headers = {
         'ETag': Term(
             '(?:W/)?"(?:[ !#-\x7E\x80-\xFF]*|\r\n[\t ]|\\.)*"',

@@ -218,6 +218,17 @@
               "discount": 1.0,
               "rating": 1.0,
               "stock": 1
+            },
+            {
+              "id": 1,
+              "title": "Some product title",
+              "description": "Some product description",
+              "brand": "Green PLC",
+              "category": "financial",
+              "price": 1.0,
+              "discount": 1.0,
+              "rating": 1.0,
+              "stock": 1
             }
           ]
         },
@@ -236,7 +247,7 @@
             "match": "type"
           },
           "$.body.products": {
-            "min": 2
+            "min": 3
           },
           "$.body.products[*].*": {
             "match": "type"
@@ -300,6 +311,7 @@
           },
           "products": [
             "http://127.0.0.1:5000/v1/products/1",
+            "http://127.0.0.1:5000/v1/products/1",
             "http://127.0.0.1:5000/v1/products/1"
           ]
         },
@@ -318,7 +330,7 @@
             "match": "type"
           },
           "$.body.products": {
-            "min": 2
+            "min": 3
           },
           "$.body.products[*].*": {
             "match": "type"
