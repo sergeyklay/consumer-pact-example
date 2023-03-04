@@ -52,7 +52,7 @@ def test_get_existent_product(pact, consumer):
     # Define the Matcher; the expected structure and content of the response
     expected_body = {
         'id': Format().integer,
-        'title': 'Over group reach plan health',
+        'title': 'product0',
         'description': Like('Chair answer nature do benefit be tonight '
                             'make travel season itself weight hard.'),
         'brand': Like('Wilson Inc'),
@@ -69,8 +69,8 @@ def test_get_existent_product(pact, consumer):
     # Define the expected behaviour of the Provider. This determines how the
     # Pact mock provider will behave. In this case, we expect a body which is
     # "Like" the structure defined above. This means the mock provider will
-    # return the EXACT content where defined, e.g. 'Over group reach plan
-    # health' for title, and SOME appropriate content e.g. for price.
+    # return the EXACT content where defined, e.g. 'product0' for title, and
+    # SOME appropriate content e.g. for description.
     (pact
      .given('there is a product with ID 1')
      .upon_receiving('a request for a product')
