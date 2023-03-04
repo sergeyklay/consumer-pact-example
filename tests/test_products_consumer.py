@@ -135,8 +135,8 @@ def test_delete_nonexistent_product(pact, consumer):
 
 def test_empty_products_response(pact, consumer):
     first = url_term(
-        r'/v1/products\?page=1&per_page=10',
-        'https://example.com/v1/products?page=1&per_page=10'
+        r'/v1/products\?page=1&per_page=10&expanded=0',
+        'https://example.com/v1/products?page=1&per_page=10&expanded=0'
     )
     self = url_term('/v1/products', 'https://example.com/v1/products')
     expected = {
@@ -206,8 +206,8 @@ def test_expanded_products_response(pact, consumer):
 
 def test_collapsed_products_response(pact, consumer):
     first = url_term(
-        r'/v1/products\?page=1&per_page=10',
-        'https://abc.cde/v1/products?page=1&per_page=10'
+        r'/v1/products\?page=1&per_page=10&expanded=0',
+        'https://abc.cde/v1/products?page=1&per_page=10&expanded=0'
     )
     self = url_term(
         r'/v1/products\?expanded=0',
