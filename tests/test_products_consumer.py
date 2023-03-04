@@ -187,7 +187,7 @@ def test_expanded_products_response(pact, consumer):
             'page': 1,
             'pages': 1,
             'per_page': 10,
-            'total': 10,
+            'total': 3,
         },
         'products': EachLike({
             'id': Format().integer,
@@ -242,7 +242,7 @@ def test_collapsed_products_response(pact, consumer):
             'page': 1,
             'pages': 1,
             'per_page': 10,
-            'total': 10,
+            'total': 3,
         },
         'products': EachLike(
             'http://127.0.0.1:5000/v1/products/1', minimum=2)}
