@@ -3,13 +3,6 @@
 # Copyright (C) 2023 Serghei Iakovlev <egrep@protonmail.ch>
 #
 # For the full copyright and license information, please view
-# the LICENSE file that was distributed with this source code
+# the LICENSE file that was distributed with this source code.
 
-coverage[toml]
-factory_boy
-flake8
-flake8-blind-except
-flake8-import-order
-pact-python
-pylint
-pytest
+"""Module for Consumer API Example testing."""
