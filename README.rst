@@ -33,9 +33,9 @@ This project uses:
 Consumer
 ========
 
-Consumer API Example is a sample application is a simple HTTP client that makes
-requests to Provider, gets response from server and creates data model using
-the data from responses. For demonstration purposes, the project has simplified
+Consumer API Example is a simple HTTP client that makes requests to Provider,
+gets response from API server and creates data model using the data from
+responses. For demonstration purposes, the project has simplified
 logic and should not be considered as a full-fledged Production-ready solution.
 
 Provider

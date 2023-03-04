@@ -11,7 +11,9 @@ import atexit
 import logging
 
 import pytest
-from pact import Consumer, Format, Like, Provider, Term
+from pact import Consumer, EachLike, Format, Like, Provider, Term
+
+from consumer.product import Product
 
 logging.basicConfig(level=logging.INFO)
 log = logging.getLogger(__name__)
@@ -167,6 +169,62 @@ def test_empty_products_response(pact, consumer):
         assert isinstance(rv['pagination'], dict)
         assert isinstance(rv['products'], list)
         assert len(rv['products']) == 0
+
+        # Make sure that all interactions defined occurred
+        pact.verify()
+
+
+def test_expanded_products_response(pact, consumer):
+    expected_body = {
+        'links': {
+            'first': Like(
+                'http://127.0.0.1:5000/v1/products?page=1&per_page=10'),
+            'last': Like(
+                'http://127.0.0.1:5000/v1/products?page=1&per_page=10'),
+            'next': None,
+            'prev': None,
+            'self': Like('http://127.0.0.1:5000/v1/products'),
+        },
+        'pagination': {
+            'page': 1,
+            'pages': 1,
+            'per_page': Format().integer,
+            'total': Format().integer,
+        },
+        'products': EachLike({
+            'id': Format().integer,
+            'title': Like('Some product title'),
+            'description': Like('Some product description'),
+            'brand': Like('Green PLC'),
+            'category': Like('financial'),
+            'price': Format().decimal,
+            'discount': Format().decimal,
+            'rating': Format().decimal,
+            'stock': Format().integer,
+        }, minimum=2)}
+    expected_headers = {
+        'ETag': Term(
+            '(?:W/)?"(?:[ !#-\x7E\x80-\xFF]*|\r\n[\t ]|\\.)*"',
+            '"a36c1fae7588366925a982e9a026b1d9"')}
+
+    (pact
+     .given('there are few products')
+     .upon_receiving('a request to get expanded list of products')
+     .with_request('get', '/v1/products', query={'expanded': '1'})
+     .will_respond_with(200, body=expected_body, headers=expected_headers))
+
+    with pact:
+        # Perform the actual request
+        rv = consumer.get_products(params={'expanded': 1})
+
+        # In this case the mock Provider will have returned a valid response
+        assert isinstance(rv, dict)
+        assert isinstance(rv['links'], dict)
+        assert isinstance(rv['pagination'], dict)
+        assert isinstance(rv['products'], list)
+        assert len(rv['products']) > 1
+        assert isinstance(rv['products'][0], Product)
+        assert isinstance(rv['products'][1], Product)
 
         # Make sure that all interactions defined occurred
         pact.verify()
