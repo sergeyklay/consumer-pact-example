@@ -28,14 +28,6 @@ class PaginationFactory(factory.DictFactory):
     total = 3
 
 
-class LinksFactory(factory.DictFactory):
-    first = None
-    last = None
-    next = None
-    prev = None
-    self = None
-
-
 class HeadersFactory(factory.DictFactory):
     class Meta:
         rename = {
@@ -46,7 +38,7 @@ class HeadersFactory(factory.DictFactory):
     content_type = 'application/json'
     etag = Term(
         '(?:W/)?"(?:[ !#-\x7E\x80-\xFF]*|\r\n[\t ]|\\.)*"',
-        '"a36c1fae7588366925a982e9a026b1d9"',
+        '"92cfceb39d57d914ed8b14d0e37643de0797ae56"',
     )
 
 
@@ -54,8 +46,8 @@ class ProductFactory(factory.DictFactory):
     id = Format().integer
     title = Like('Some product title')
     description = Like('Some product description')
-    brand = Like('Green PLC')
-    category = Like('financial')
+    brand_id = Format().integer
+    category_id = Format().integer
     price = Format().decimal
     discount = Format().decimal
     rating = Format().decimal

@@ -11,20 +11,20 @@
       "providerState": "there is a product with ID 1",
       "request": {
         "method": "get",
-        "path": "/v1/products/1"
+        "path": "/v2/products/1"
       },
       "response": {
         "status": 200,
         "headers": {
           "Content-Type": "application/json",
-          "ETag": "\"a36c1fae7588366925a982e9a026b1d9\""
+          "ETag": "\"92cfceb39d57d914ed8b14d0e37643de0797ae56\""
         },
         "body": {
           "id": 1,
           "title": "product0",
           "description": "Some product description",
-          "brand": "Green PLC",
-          "category": "financial",
+          "brand_id": 1,
+          "category_id": 1,
           "price": 1.0,
           "discount": 1.0,
           "rating": 1.0,
@@ -41,10 +41,10 @@
           "$.body.description": {
             "match": "type"
           },
-          "$.body.brand": {
+          "$.body.brand_id": {
             "match": "type"
           },
-          "$.body.category": {
+          "$.body.category_id": {
             "match": "type"
           },
           "$.body.price": {
@@ -67,7 +67,7 @@
       "providerState": "there is no product with ID 7777",
       "request": {
         "method": "get",
-        "path": "/v1/products/7777"
+        "path": "/v2/products/7777"
       },
       "response": {
         "status": 404,
@@ -75,19 +75,9 @@
           "Content-Type": "application/json"
         },
         "body": {
-          "description": "Invalid resource URI.",
-          "status": 404,
-          "title": "Not Found"
-        },
-        "matchingRules": {
-          "$.body.description": {
-            "match": "regex",
-            "regex": "Invalid resource URI."
-          },
-          "$.body.title": {
-            "match": "regex",
-            "regex": "Not Found"
-          }
+          "message": "Product not found",
+          "code": 404,
+          "status": "Not Found"
         }
       }
     },
@@ -96,27 +86,16 @@
       "providerState": "there is no product with ID 7777",
       "request": {
         "method": "delete",
-        "path": "/v1/products/7777"
+        "path": "/v2/products/7777"
       },
       "response": {
-        "status": 404,
+        "status": 428,
         "headers": {
           "Content-Type": "application/json"
         },
         "body": {
-          "description": "Invalid resource URI.",
-          "status": 404,
-          "title": "Not Found"
-        },
-        "matchingRules": {
-          "$.body.description": {
-            "match": "regex",
-            "regex": "Invalid resource URI."
-          },
-          "$.body.title": {
-            "match": "regex",
-            "regex": "Not Found"
-          }
+          "code": 428,
+          "status": "Precondition Required"
         }
       }
     },
@@ -125,48 +104,21 @@
       "providerState": "there are no products",
       "request": {
         "method": "get",
-        "path": "/v1/products"
+        "path": "/v2/products"
       },
       "response": {
         "status": 200,
         "headers": {
           "Content-Type": "application/json",
-          "ETag": "\"a36c1fae7588366925a982e9a026b1d9\""
+          "ETag": "\"92cfceb39d57d914ed8b14d0e37643de0797ae56\""
         },
-        "body": {
-          "links": {
-            "first": "https://example.com/v1/products?page=1&per_page=10&expanded=0",
-            "last": "https://example.com/v1/products?page=1&per_page=10&expanded=0",
-            "next": null,
-            "prev": null,
-            "self": "https://example.com/v1/products"
-          },
-          "pagination": {
-            "page": 1,
-            "pages": 1,
-            "per_page": 10,
-            "total": 0
-          },
-          "products": [
+        "body": [
 
-          ]
-        },
+        ],
         "matchingRules": {
           "$.headers.ETag": {
             "match": "regex",
             "regex": "(?:W\\/)?\"(?:[ !#-~\\u0080-\\u00FF]*|\r\n[\t ]|\\.)*\""
-          },
-          "$.body.links.first": {
-            "match": "regex",
-            "regex": "https?:\\/\\/[-a-zA-Z0-9@:%._\\+~#=]{1,256}\\/v1\\/products\\?page=1&per_page=10&expanded=0"
-          },
-          "$.body.links.last": {
-            "match": "regex",
-            "regex": "https?:\\/\\/[-a-zA-Z0-9@:%._\\+~#=]{1,256}\\/v1\\/products\\?page=1&per_page=10&expanded=0"
-          },
-          "$.body.links.self": {
-            "match": "regex",
-            "regex": "https?:\\/\\/[-a-zA-Z0-9@:%._\\+~#=]{1,256}\\/v1\\/products"
           }
         }
       }
@@ -176,178 +128,87 @@
       "providerState": "there are few products",
       "request": {
         "method": "get",
-        "path": "/v1/products",
+        "path": "/v2/products",
         "query": "expanded=1"
       },
       "response": {
         "status": 200,
         "headers": {
           "Content-Type": "application/json",
-          "ETag": "\"a36c1fae7588366925a982e9a026b1d9\""
+          "ETag": "\"92cfceb39d57d914ed8b14d0e37643de0797ae56\""
         },
-        "body": {
-          "links": {
-            "first": "https://example.com/v1/products?page=1&per_page=10&expanded=1",
-            "last": "https://example.com/v1/products?page=1&per_page=10&expanded=1",
-            "next": null,
-            "prev": null,
-            "self": "https://example.com/v1/products?expanded=1"
+        "body": [
+          {
+            "id": 1,
+            "title": "Some product title",
+            "description": "Some product description",
+            "brand_id": 1,
+            "category_id": 1,
+            "price": 1.0,
+            "discount": 1.0,
+            "rating": 1.0,
+            "stock": 1
           },
-          "pagination": {
-            "page": 1,
-            "pages": 1,
-            "per_page": 10,
-            "total": 3
+          {
+            "id": 1,
+            "title": "Some product title",
+            "description": "Some product description",
+            "brand_id": 1,
+            "category_id": 1,
+            "price": 1.0,
+            "discount": 1.0,
+            "rating": 1.0,
+            "stock": 1
           },
-          "products": [
-            {
-              "id": 1,
-              "title": "Some product title",
-              "description": "Some product description",
-              "brand": "Green PLC",
-              "category": "financial",
-              "price": 1.0,
-              "discount": 1.0,
-              "rating": 1.0,
-              "stock": 1
-            },
-            {
-              "id": 1,
-              "title": "Some product title",
-              "description": "Some product description",
-              "brand": "Green PLC",
-              "category": "financial",
-              "price": 1.0,
-              "discount": 1.0,
-              "rating": 1.0,
-              "stock": 1
-            },
-            {
-              "id": 1,
-              "title": "Some product title",
-              "description": "Some product description",
-              "brand": "Green PLC",
-              "category": "financial",
-              "price": 1.0,
-              "discount": 1.0,
-              "rating": 1.0,
-              "stock": 1
-            }
-          ]
-        },
-        "matchingRules": {
-          "$.headers.ETag": {
-            "match": "regex",
-            "regex": "(?:W\\/)?\"(?:[ !#-~\\u0080-\\u00FF]*|\r\n[\t ]|\\.)*\""
-          },
-          "$.body.links.first": {
-            "match": "regex",
-            "regex": "https?:\\/\\/[-a-zA-Z0-9@:%._\\+~#=]{1,256}\\/v1\\/products\\?page=1&per_page=10&expanded=1"
-          },
-          "$.body.links.last": {
-            "match": "regex",
-            "regex": "https?:\\/\\/[-a-zA-Z0-9@:%._\\+~#=]{1,256}\\/v1\\/products\\?page=1&per_page=10&expanded=1"
-          },
-          "$.body.links.self": {
-            "match": "regex",
-            "regex": "https?:\\/\\/[-a-zA-Z0-9@:%._\\+~#=]{1,256}\\/v1\\/products\\?expanded=1"
-          },
-          "$.body.products": {
-            "min": 3
-          },
-          "$.body.products[*].*": {
-            "match": "type"
-          },
-          "$.body.products[*].id": {
-            "match": "type"
-          },
-          "$.body.products[*].title": {
-            "match": "type"
-          },
-          "$.body.products[*].description": {
-            "match": "type"
-          },
-          "$.body.products[*].brand": {
-            "match": "type"
-          },
-          "$.body.products[*].category": {
-            "match": "type"
-          },
-          "$.body.products[*].price": {
-            "match": "type"
-          },
-          "$.body.products[*].discount": {
-            "match": "type"
-          },
-          "$.body.products[*].rating": {
-            "match": "type"
-          },
-          "$.body.products[*].stock": {
-            "match": "type"
+          {
+            "id": 1,
+            "title": "Some product title",
+            "description": "Some product description",
+            "brand_id": 1,
+            "category_id": 1,
+            "price": 1.0,
+            "discount": 1.0,
+            "rating": 1.0,
+            "stock": 1
           }
-        }
-      }
-    },
-    {
-      "description": "a request to get collapsed list of products",
-      "providerState": "there are few products",
-      "request": {
-        "method": "get",
-        "path": "/v1/products",
-        "query": "expanded=0"
-      },
-      "response": {
-        "status": 200,
-        "headers": {
-          "Content-Type": "application/json",
-          "ETag": "\"a36c1fae7588366925a982e9a026b1d9\""
-        },
-        "body": {
-          "links": {
-            "first": "https://abc.cde/v1/products?page=1&per_page=10&expanded=0",
-            "last": "https://abc.cde/v1/products?page=1&per_page=10&expanded=0",
-            "next": null,
-            "prev": null,
-            "self": "https://abc.cde/v1/products?expanded=0"
-          },
-          "pagination": {
-            "page": 1,
-            "pages": 1,
-            "per_page": 10,
-            "total": 3
-          },
-          "products": [
-            "https://abc.cde/v1/products/1",
-            "https://abc.cde/v1/products/1",
-            "https://abc.cde/v1/products/1"
-          ]
-        },
+        ],
         "matchingRules": {
           "$.headers.ETag": {
             "match": "regex",
             "regex": "(?:W\\/)?\"(?:[ !#-~\\u0080-\\u00FF]*|\r\n[\t ]|\\.)*\""
           },
-          "$.body.links.first": {
-            "match": "regex",
-            "regex": "https?:\\/\\/[-a-zA-Z0-9@:%._\\+~#=]{1,256}\\/v1\\/products\\?page=1&per_page=10&expanded=0"
-          },
-          "$.body.links.last": {
-            "match": "regex",
-            "regex": "https?:\\/\\/[-a-zA-Z0-9@:%._\\+~#=]{1,256}\\/v1\\/products\\?page=1&per_page=10&expanded=0"
-          },
-          "$.body.links.self": {
-            "match": "regex",
-            "regex": "https?:\\/\\/[-a-zA-Z0-9@:%._\\+~#=]{1,256}\\/v1\\/products\\?expanded=0"
-          },
-          "$.body.products": {
+          "$.body": {
             "min": 3
           },
-          "$.body.products[*].*": {
+          "$.body[*].*": {
             "match": "type"
           },
-          "$.body.products[*]": {
-            "match": "regex",
-            "regex": "https?:\\/\\/[-a-zA-Z0-9@:%._\\+~#=]{1,256}\\/v1\\/products\\/[0-9]+"
+          "$.body[*].id": {
+            "match": "type"
+          },
+          "$.body[*].title": {
+            "match": "type"
+          },
+          "$.body[*].description": {
+            "match": "type"
+          },
+          "$.body[*].brand_id": {
+            "match": "type"
+          },
+          "$.body[*].category_id": {
+            "match": "type"
+          },
+          "$.body[*].price": {
+            "match": "type"
+          },
+          "$.body[*].discount": {
+            "match": "type"
+          },
+          "$.body[*].rating": {
+            "match": "type"
+          },
+          "$.body[*].stock": {
+            "match": "type"
           }
         }
       }
