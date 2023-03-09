@@ -31,7 +31,7 @@ class ProductConsumer:
     Demonstrate some basic functionality of how the Product Consumer will
     interact with the Product Provider, in this case a simple get_product."""
 
-    API_VERSION = 'v1'
+    API_VERSION = 'v2'
 
     def __init__(self, base_uri: str):
         """Initialise the Consumer, in this case we only need to know the URI.
@@ -63,7 +63,7 @@ class ProductConsumer:
             return True
         return False
 
-    def get_products(self, params: dict = None) -> Optional[dict]:
+    def get_products(self, params: dict = None) -> Optional[list]:
         uri = f'{self.base_uri}/{self.API_VERSION}/products'
         response = requests.get(uri, params=params, timeout=3.0)
 
@@ -71,22 +71,15 @@ class ProductConsumer:
             return None
 
         data = response.json()
-        rv = {
-            'links': data['links'],
-            'pagination': data['pagination'],
-            'products': [],
-        }
+        rv = []
 
-        for p in data['products']:
-            if params and 'expanded' in params and params['expanded'] == 0:
-                rv['products'].append(p)
-            else:
-                rv['products'].append(
-                    Product(
-                        title=p['title'],
-                        description=p['description'],
-                        price=p['price'],
-                    )
+        for p in data:
+            rv.append(
+                Product(
+                    title=p['title'],
+                    description=p['description'],
+                    price=p['price'],
                 )
+            )
 
         return rv

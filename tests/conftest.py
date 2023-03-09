@@ -10,7 +10,6 @@ import subprocess
 
 import pytest
 
-from consumer import __version__ as version
 from consumer.product import ProductConsumer
 
 
@@ -62,5 +61,7 @@ def app_version() -> str:
 
     See https://docs.pact.io/pact_broker/pacticipant_version_numbers for more
     details."""
+    from consumer import __version__
+
     git_commit = git_revision_short_hash()
-    return f'{version}+{git_commit}'
+    return f'{__version__}+{git_commit}'
