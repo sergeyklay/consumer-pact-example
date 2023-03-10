@@ -7,22 +7,25 @@
 # For the full copyright and license information, please view
 # the LICENSE file that was distributed with this source code.
 
+from dataclasses import dataclass
 from typing import Optional
 
 import requests
 
 
+@dataclass(frozen=True)
 class Product:
     """Define the basic Product data we expect to receive from the provider."""
 
-    def __init__(self, title: str, description: str, price: float):
-        self.title = title
-        self.description = description
-        self.price = price
-
-    def __repr__(self):
-        """Returns the object representation in string format."""
-        return f'<Product {self.title}>'
+    id: int
+    title: str
+    description: str
+    price: float
+    discount: float
+    rating: float
+    stock: int
+    brand_id: int
+    category_id: int
 
 
 class ProductConsumer:
@@ -45,14 +48,7 @@ class ProductConsumer:
 
         if response.status_code == 404:
             return None
-
-        data = response.json()
-
-        return Product(
-            title=data['title'],
-            description=data['description'],
-            price=data['price'],
-        )
+        return Product(**response.json())
 
     def delete_product(self, product_id: int) -> bool:
         uri = f'{self.base_uri}/{self.version}/products/{product_id}'
@@ -70,15 +66,4 @@ class ProductConsumer:
             return None
 
         data = response.json()
-        rv = []
-
-        for p in data:
-            rv.append(
-                Product(
-                    title=p['title'],
-                    description=p['description'],
-                    price=p['price'],
-                )
-            )
-
-        return rv
+        return [Product(**p) for p in data]
