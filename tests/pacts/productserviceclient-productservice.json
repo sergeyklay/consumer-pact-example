@@ -33,7 +33,7 @@
         "matchingRules": {
           "$.headers.ETag": {
             "match": "regex",
-            "regex": "(?:W\\/)?\"(?:[ !#-~\\u0080-\\u00FF]*|\r\n[\t ]|\\.)*\""
+            "regex": "^(?:\\x57\\x2f)?\"(?:[\\x21\\x23-\\x7e]*|\\r\\n[\\t ]|\\.)*\"$"
           },
           "$.body.id": {
             "match": "type"
@@ -118,7 +118,7 @@
         "matchingRules": {
           "$.headers.ETag": {
             "match": "regex",
-            "regex": "(?:W\\/)?\"(?:[ !#-~\\u0080-\\u00FF]*|\r\n[\t ]|\\.)*\""
+            "regex": "^(?:\\x57\\x2f)?\"(?:[\\x21\\x23-\\x7e]*|\\r\\n[\\t ]|\\.)*\"$"
           }
         }
       }
@@ -174,7 +174,7 @@
         "matchingRules": {
           "$.headers.ETag": {
             "match": "regex",
-            "regex": "(?:W\\/)?\"(?:[ !#-~\\u0080-\\u00FF]*|\r\n[\t ]|\\.)*\""
+            "regex": "^(?:\\x57\\x2f)?\"(?:[\\x21\\x23-\\x7e]*|\\r\\n[\\t ]|\\.)*\"$"
           },
           "$.body": {
             "min": 3
@@ -224,8 +224,8 @@
         "status": 200,
         "headers": {
           "Content-Type": "application/json",
-          "X-Pagination": "{\"total\": 0, \"total_pages\": 0}",
-          "ETag": "\"92cfceb39d57d914ed8b14d0e37643de0797ae56\""
+          "ETag": "\"92cfceb39d57d914ed8b14d0e37643de0797ae56\"",
+          "X-Pagination": "{\"total\": 0, \"total_pages\": 0}"
         },
         "body": [
 
@@ -233,7 +233,7 @@
         "matchingRules": {
           "$.headers.ETag": {
             "match": "regex",
-            "regex": "(?:W\\/)?\"(?:[ !#-~\\u0080-\\u00FF]*|\r\n[\t ]|\\.)*\""
+            "regex": "^(?:\\x57\\x2f)?\"(?:[\\x21\\x23-\\x7e]*|\\r\\n[\\t ]|\\.)*\"$"
           }
         }
       }

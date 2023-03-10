@@ -171,18 +171,14 @@ def test_products_response(pact, consumer):
 
 
 def test_no_products_in_category_response(pact, consumer):
+    headers = HeadersFactory.create()  # type: dict
+    headers.update({'X-Pagination': '{"total": 0, "total_pages": 0}'})
+
     (pact
      .given('there are no products in category #2')
      .upon_receiving('a request to get list of products')
      .with_request('get', '/v2/products', query={'cid': '2'})
-     .will_respond_with(200, body=[], headers={
-        'Content-Type': 'application/json',
-        'X-Pagination': '{"total": 0, "total_pages": 0}',
-        'ETag': Term(
-            '(?:W/)?"(?:[ !#-\x7E\x80-\xFF]*|\r\n[\t ]|\\.)*"',
-            '"92cfceb39d57d914ed8b14d0e37643de0797ae56"',
-        ),
-     }))
+     .will_respond_with(200, body=[], headers=headers))
 
     with pact:
         # Perform the actual request
