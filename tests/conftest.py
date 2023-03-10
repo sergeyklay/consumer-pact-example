@@ -10,7 +10,7 @@ import subprocess
 
 import pytest
 
-from consumer.product import ProductConsumer
+from consumer.product import Client
 
 
 @pytest.fixture(scope='session')
@@ -32,13 +32,22 @@ def pact_dir() -> str:
     )
 
 
+class TestClient(Client):
+    def __init__(self, options: dict):
+        super(TestClient, self).__init__(
+            base_url=f"http://{options['host_name']}:{options['port']}",
+            version='v2',
+        )
+
+    @property
+    def base_url(self):
+        return self.options['base_url']
+
+
 @pytest.fixture
-def consumer(mock_opts: dict) -> ProductConsumer:
+def client(mock_opts: dict) -> Client:
     """Create an HTTP client to use in tests."""
-    return ProductConsumer(
-        f"http://{mock_opts['host_name']}:{mock_opts['port']}",
-        'v2'
-    )
+    return TestClient(mock_opts)
 
 
 def git_revision_short_hash() -> str:
