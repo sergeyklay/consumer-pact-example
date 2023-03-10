@@ -124,12 +124,11 @@
       }
     },
     {
-      "description": "a request to get expanded list of products",
+      "description": "a request to get list of products",
       "providerState": "there are few products",
       "request": {
         "method": "get",
-        "path": "/v2/products",
-        "query": "expanded=1"
+        "path": "/v2/products"
       },
       "response": {
         "status": 200,
@@ -209,6 +208,32 @@
           },
           "$.body[*].stock": {
             "match": "type"
+          }
+        }
+      }
+    },
+    {
+      "description": "a request to get list of products",
+      "providerState": "there are no products in category #2",
+      "request": {
+        "method": "get",
+        "path": "/v2/products",
+        "query": "cid=2"
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "application/json",
+          "X-Pagination": "{\"total\": 0, \"total_pages\": 0}",
+          "ETag": "\"92cfceb39d57d914ed8b14d0e37643de0797ae56\""
+        },
+        "body": [
+
+        ],
+        "matchingRules": {
+          "$.headers.ETag": {
+            "match": "regex",
+            "regex": "(?:W\\/)?\"(?:[ !#-~\\u0080-\\u00FF]*|\r\n[\t ]|\\.)*\""
           }
         }
       }
