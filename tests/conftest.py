@@ -14,7 +14,7 @@ from consumer.product import ProductConsumer
 
 
 @pytest.fixture(scope='session')
-def mock_opts():
+def mock_opts() -> dict:
     """Define where to run the mock server, for the consumer to connect to."""
     host_name = os.environ.get('PACT_MOCK_HOST', 'localhost')
     return {
@@ -24,7 +24,7 @@ def mock_opts():
 
 
 @pytest.fixture(scope='session')
-def pact_dir():
+def pact_dir() -> str:
     """Get path to output the JSON Pact files created by any tests."""
     return os.path.join(
         os.path.dirname(os.path.realpath(__file__)),
@@ -33,7 +33,8 @@ def pact_dir():
 
 
 @pytest.fixture
-def consumer(mock_opts) -> ProductConsumer:
+def consumer(mock_opts: dict) -> ProductConsumer:
+    """Create an HTTP client to use in tests."""
     return ProductConsumer(
         f"http://{mock_opts['host_name']}:{mock_opts['port']}",
         'v2'
