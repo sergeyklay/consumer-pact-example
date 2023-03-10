@@ -14,7 +14,7 @@ import logging
 import pytest
 from pact import Consumer, EachLike, Provider
 
-from consumer.product import Product
+from consumer.product import Client, Product
 from .factories import HeadersFactory, ProductFactory
 
 logging.basicConfig(level=logging.INFO)
@@ -31,6 +31,7 @@ def pact(mock_opts, pact_dir, app_version):
         **mock_opts,
     )
 
+    # Start the Pact mock server
     pact.start_service()
 
     # Make sure the Pact mocked provider is stopped when we finish, otherwise
@@ -45,12 +46,11 @@ def pact(mock_opts, pact_dir, app_version):
 
     # Given we have cleanly stopped the service, we do not want to re-submit
     # the Pacts to the Pact Broker again atexit, since the Broker may no longer
-    # be available if it has been started using the --run-broker option, as it
-    # will have been torn down at that point
+    # be available at that point
     pact.publish_to_broker = False
 
 
-def test_get_existent_product(pact, consumer):
+def test_get_existent_product(pact, client: Client):
     # Define the Matcher; the expected structure and content of the response
     expected = ProductFactory(title='product0')
 
@@ -67,7 +67,7 @@ def test_get_existent_product(pact, consumer):
 
     with pact:
         # Perform the actual request
-        product = consumer.get_product(1)
+        product = client.get_product(1)
 
         # In this case the mock Provider will have returned a valid response
         assert product.title == expected['title']
@@ -76,7 +76,7 @@ def test_get_existent_product(pact, consumer):
         pact.verify()
 
 
-def test_get_nonexistent_product(pact, consumer):
+def test_get_nonexistent_product(pact, client: Client):
     expected = {
         'message': 'Product not found',
         'code': 404,
@@ -93,7 +93,7 @@ def test_get_nonexistent_product(pact, consumer):
 
     with pact:
         # Perform the actual request
-        status = consumer.get_product(7777)
+        status = client.get_product(7777)
 
         # In this case the mock Provider will have returned a valid response
         assert status is None
@@ -102,7 +102,7 @@ def test_get_nonexistent_product(pact, consumer):
         pact.verify()
 
 
-def test_delete_nonexistent_product_no_if_match(pact, consumer):
+def test_delete_nonexistent_product_no_if_match(pact, client: Client):
     expected = {
         'code': 428,
         'status': 'Precondition Required',
@@ -118,7 +118,7 @@ def test_delete_nonexistent_product_no_if_match(pact, consumer):
 
     with pact:
         # Perform the actual request
-        status = consumer.delete_product(7777)
+        status = client.delete_product(7777)
 
         # In this case the mock Provider will have returned a valid response
         assert status is False
@@ -127,7 +127,7 @@ def test_delete_nonexistent_product_no_if_match(pact, consumer):
         pact.verify()
 
 
-def test_empty_products_response(pact, consumer):
+def test_empty_products_response(pact, client: Client):
     headers = HeadersFactory.create()  # type: dict
     headers.update({'X-Pagination': '{"total": 0, "total_pages": 0}'})
 
@@ -139,7 +139,7 @@ def test_empty_products_response(pact, consumer):
 
     with pact:
         # Perform the actual request
-        rv = consumer.get_products()
+        rv = client.get_products()
 
         # In this case the mock Provider will have returned a valid response
         assert isinstance(rv, list)
@@ -149,7 +149,7 @@ def test_empty_products_response(pact, consumer):
         pact.verify()
 
 
-def test_products_response(pact, consumer):
+def test_products_response(pact, client: Client):
     expected = EachLike(ProductFactory(), minimum=3)
     headers = HeadersFactory.create()  # type: dict
     headers.update({'X-Pagination': json.dumps({
@@ -168,7 +168,7 @@ def test_products_response(pact, consumer):
 
     with pact:
         # Perform the actual request
-        rv = consumer.get_products()
+        rv = client.get_products()
 
         # In this case the mock Provider will have returned a valid response
         assert isinstance(rv, list)
@@ -181,7 +181,7 @@ def test_products_response(pact, consumer):
         pact.verify()
 
 
-def test_no_products_in_category_response(pact, consumer):
+def test_no_products_in_category_response(pact, client: Client):
     headers = HeadersFactory.create()  # type: dict
     headers.update({'X-Pagination': '{"total": 0, "total_pages": 0}'})
 
@@ -193,7 +193,7 @@ def test_no_products_in_category_response(pact, consumer):
 
     with pact:
         # Perform the actual request
-        rv = consumer.get_products(params={'cid': 2})
+        rv = client.get_products(params={'cid': 2})
 
         # In this case the mock Provider will have returned a valid response
         assert isinstance(rv, list)

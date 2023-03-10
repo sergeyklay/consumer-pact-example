@@ -12,6 +12,8 @@ from typing import Optional
 
 import requests
 
+from consumer.utils import merge_dicts
+
 
 @dataclass(frozen=True)
 class Product:
@@ -28,42 +30,54 @@ class Product:
     category_id: int
 
 
-class ProductConsumer:
+class Client:
     """Product Consumer.
 
     Demonstrate some basic functionality of how the Product Consumer will
     interact with the Product Provider, in this case a simple get_product."""
 
-    def __init__(self, base_uri: str, version: str):
-        """Initialise the Consumer, in this case we only need to know the URI.
+    DEFAULT_OPTIONS = {
+        # API endpoint base URL to connect to.
+        'base_url': 'http://localhost',
 
-        :param base_uri: The full URI, including port of the Provider to
-                         connect to"""
-        self.base_uri = base_uri.rstrip('/')
-        self.version = version
+        # Used API version.
+        'version': 'v1',
+    }
+
+    def __init__(self, **options):
+        """A :class:`Client` object for interacting with API."""
+        self.options = merge_dicts(self.DEFAULT_OPTIONS, options)
+        self.headers = options.pop('headers', {})
 
     def get_product(self, product_id: int) -> Optional[Product]:
-        uri = f'{self.base_uri}/{self.version}/products/{product_id}'
-        response = requests.get(uri, timeout=3.0)
+        url = (f"{self.options['base_url'].rstrip('/')}"
+               f"/{self.options['version']}"
+               f"/products/{product_id}")
 
+        response = requests.get(url, timeout=3.0)
         if response.status_code == 404:
             return None
+
         return Product(**response.json())
 
     def delete_product(self, product_id: int) -> bool:
-        uri = f'{self.base_uri}/{self.version}/products/{product_id}'
-        response = requests.delete(uri, timeout=3.0)
+        url = (f"{self.options['base_url'].rstrip('/')}"
+               f"/{self.options['version']}"
+               f"/products/{product_id}")
 
+        response = requests.delete(url, timeout=3.0)
         if response.status_code == 204:
             return True
+
         return False
 
     def get_products(self, params: dict = None) -> Optional[list]:
-        uri = f'{self.base_uri}/{self.version}/products'
-        response = requests.get(uri, params=params, timeout=3.0)
+        url = (f"{self.options['base_url'].rstrip('/')}"
+               f"/{self.options['version']}"
+               f"/products")
 
+        response = requests.get(url, params=params, timeout=3.0)
         if response.status_code != 200:
             return None
 
-        data = response.json()
-        return [Product(**p) for p in data]
+        return [Product(**p) for p in response.json()]
