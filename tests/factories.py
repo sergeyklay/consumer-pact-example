@@ -29,8 +29,15 @@ class HeadersFactory(factory.DictFactory):
         }
 
     content_type = 'application/json'
+
+    # Examples:
+    #
+    #    ETag: "xyzzy"
+    #    ETag: W/"xyzzy"
+    #    ETag: ""
+    #
     etag = Term(
-        '(?:W/)?"(?:[ !#-\x7E\x80-\xFF]*|\r\n[\t ]|\\.)*"',
+        r'^(?:\x57\x2f)?"(?:[\x21\x23-\x7e]*|\r\n[\t ]|\.)*"$',
         '"92cfceb39d57d914ed8b14d0e37643de0797ae56"',
     )
 
