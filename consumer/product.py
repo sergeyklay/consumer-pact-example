@@ -17,7 +17,7 @@ import requests
 class Product:
     """Define the basic Product data we expect to receive from the provider."""
 
-    id: int
+    id: int  # pylint: disable=invalid-name
     title: str
     description: str
     price: float
