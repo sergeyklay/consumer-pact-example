@@ -21,13 +21,6 @@ def url_term(path: str, generate: str):
         generate)
 
 
-class PaginationFactory(factory.DictFactory):
-    page = 1
-    pages = 1
-    per_page = 10
-    total = 3
-
-
 class HeadersFactory(factory.DictFactory):
     class Meta:
         rename = {

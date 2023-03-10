@@ -11,7 +11,7 @@ import atexit
 import logging
 
 import pytest
-from pact import Consumer, EachLike, Provider
+from pact import Consumer, EachLike, Provider, Term
 
 from consumer.product import Product
 from .factories import HeadersFactory, ProductFactory
@@ -152,19 +152,45 @@ def test_products_response(pact, consumer):
 
     (pact
      .given('there are few products')
-     .upon_receiving('a request to get expanded list of products')
-     .with_request('get', '/v2/products', query={'expanded': '1'})
+     .upon_receiving('a request to get list of products')
+     .with_request('get', '/v2/products')
      .will_respond_with(200, body=expected, headers=HeadersFactory()))
 
     with pact:
         # Perform the actual request
-        rv = consumer.get_products(params={'expanded': 1})
+        rv = consumer.get_products()
 
         # In this case the mock Provider will have returned a valid response
         assert isinstance(rv, list)
         assert len(rv) > 1
         assert isinstance(rv[0], Product)
         assert isinstance(rv[1], Product)
+
+        # Make sure that all interactions defined occurred
+        pact.verify()
+
+
+def test_no_products_in_category_response(pact, consumer):
+    (pact
+     .given('there are no products in category #2')
+     .upon_receiving('a request to get list of products')
+     .with_request('get', '/v2/products', query={'cid': '2'})
+     .will_respond_with(200, body=[], headers={
+        'Content-Type': 'application/json',
+        'X-Pagination': '{"total": 0, "total_pages": 0}',
+        'ETag': Term(
+            '(?:W/)?"(?:[ !#-\x7E\x80-\xFF]*|\r\n[\t ]|\\.)*"',
+            '"92cfceb39d57d914ed8b14d0e37643de0797ae56"',
+        ),
+     }))
+
+    with pact:
+        # Perform the actual request
+        rv = consumer.get_products(params={'cid': 2})
+
+        # In this case the mock Provider will have returned a valid response
+        assert isinstance(rv, list)
+        assert len(rv) == 0
 
         # Make sure that all interactions defined occurred
         pact.verify()
