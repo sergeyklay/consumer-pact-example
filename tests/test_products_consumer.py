@@ -8,10 +8,11 @@
 """Pact test for Product service client."""
 
 import atexit
+import json
 import logging
 
 import pytest
-from pact import Consumer, EachLike, Provider, Term
+from pact import Consumer, EachLike, Provider
 
 from consumer.product import Product
 from .factories import HeadersFactory, ProductFactory
@@ -127,13 +128,14 @@ def test_delete_nonexistent_product_no_if_match(pact, consumer):
 
 
 def test_empty_products_response(pact, consumer):
-    expected = []
+    headers = HeadersFactory.create()  # type: dict
+    headers.update({'X-Pagination': '{"total": 0, "total_pages": 0}'})
 
     (pact
      .given('there are no products')
      .upon_receiving('a request to get list of products')
      .with_request('get', '/v2/products')
-     .will_respond_with(200, body=expected, headers=HeadersFactory()))
+     .will_respond_with(200, body=[], headers=headers))
 
     with pact:
         # Perform the actual request
@@ -149,12 +151,20 @@ def test_empty_products_response(pact, consumer):
 
 def test_products_response(pact, consumer):
     expected = EachLike(ProductFactory(), minimum=3)
+    headers = HeadersFactory.create()  # type: dict
+    headers.update({'X-Pagination': json.dumps({
+        'total': 3,
+        'total_pages': 1,
+        'first_page': 1,
+        'last_page': 1,
+        'page': 1,
+    })})
 
     (pact
      .given('there are few products')
      .upon_receiving('a request to get list of products')
      .with_request('get', '/v2/products')
-     .will_respond_with(200, body=expected, headers=HeadersFactory()))
+     .will_respond_with(200, body=expected, headers=headers))
 
     with pact:
         # Perform the actual request
@@ -162,9 +172,10 @@ def test_products_response(pact, consumer):
 
         # In this case the mock Provider will have returned a valid response
         assert isinstance(rv, list)
-        assert len(rv) > 1
+        assert len(rv) >= 3
         assert isinstance(rv[0], Product)
         assert isinstance(rv[1], Product)
+        assert isinstance(rv[2], Product)
 
         # Make sure that all interactions defined occurred
         pact.verify()

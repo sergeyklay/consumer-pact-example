@@ -110,7 +110,8 @@
         "status": 200,
         "headers": {
           "Content-Type": "application/json",
-          "ETag": "\"92cfceb39d57d914ed8b14d0e37643de0797ae56\""
+          "ETag": "\"92cfceb39d57d914ed8b14d0e37643de0797ae56\"",
+          "X-Pagination": "{\"total\": 0, \"total_pages\": 0}"
         },
         "body": [
 
@@ -134,7 +135,8 @@
         "status": 200,
         "headers": {
           "Content-Type": "application/json",
-          "ETag": "\"92cfceb39d57d914ed8b14d0e37643de0797ae56\""
+          "ETag": "\"92cfceb39d57d914ed8b14d0e37643de0797ae56\"",
+          "X-Pagination": "{\"total\": 3, \"total_pages\": 1, \"first_page\": 1, \"last_page\": 1, \"page\": 1}"
         },
         "body": [
           {
