@@ -35,7 +35,8 @@ def pact_dir():
 @pytest.fixture
 def consumer(mock_opts) -> ProductConsumer:
     return ProductConsumer(
-        f"http://{mock_opts['host_name']}:{mock_opts['port']}"
+        f"http://{mock_opts['host_name']}:{mock_opts['port']}",
+        'v2'
     )
 
 

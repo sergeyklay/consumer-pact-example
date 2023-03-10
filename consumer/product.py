@@ -31,17 +31,16 @@ class ProductConsumer:
     Demonstrate some basic functionality of how the Product Consumer will
     interact with the Product Provider, in this case a simple get_product."""
 
-    API_VERSION = 'v2'
-
-    def __init__(self, base_uri: str):
+    def __init__(self, base_uri: str, version: str):
         """Initialise the Consumer, in this case we only need to know the URI.
 
         :param base_uri: The full URI, including port of the Provider to
                          connect to"""
         self.base_uri = base_uri.rstrip('/')
+        self.version = version
 
     def get_product(self, product_id: int) -> Optional[Product]:
-        uri = f'{self.base_uri}/{self.API_VERSION}/products/{product_id}'
+        uri = f'{self.base_uri}/{self.version}/products/{product_id}'
         response = requests.get(uri, timeout=3.0)
 
         if response.status_code == 404:
@@ -56,7 +55,7 @@ class ProductConsumer:
         )
 
     def delete_product(self, product_id: int) -> bool:
-        uri = f'{self.base_uri}/{self.API_VERSION}/products/{product_id}'
+        uri = f'{self.base_uri}/{self.version}/products/{product_id}'
         response = requests.delete(uri, timeout=3.0)
 
         if response.status_code == 204:
@@ -64,7 +63,7 @@ class ProductConsumer:
         return False
 
     def get_products(self, params: dict = None) -> Optional[list]:
-        uri = f'{self.base_uri}/{self.API_VERSION}/products'
+        uri = f'{self.base_uri}/{self.version}/products'
         response = requests.get(uri, params=params, timeout=3.0)
 
         if response.status_code != 200:
