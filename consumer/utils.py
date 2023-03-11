@@ -7,6 +7,9 @@
 # For the full copyright and license information, please view
 # the LICENSE file that was distributed with this source code.
 
+"""Various auxiliary utilities for which no dedicated module may be found."""
+
+
 def merge_dicts(*objects) -> dict:
     """Merge one or more objects into a new object.
     >>> merge({'a': 42}, {'foo': 'bar'})
