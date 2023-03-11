@@ -28,6 +28,8 @@ class Product:
     stock: int
     brand_id: int
     category_id: int
+    created_at: str
+    updated_at: str
 
 
 class Client:
