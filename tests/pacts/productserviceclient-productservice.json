@@ -21,7 +21,7 @@
         },
         "body": {
           "id": 1,
-          "title": "product0",
+          "name": "product0",
           "description": "Some product description",
           "brand_id": 1,
           "category_id": 1,
@@ -141,7 +141,7 @@
         "body": [
           {
             "id": 1,
-            "title": "Some product title",
+            "name": "Some product name",
             "description": "Some product description",
             "brand_id": 1,
             "category_id": 1,
@@ -152,7 +152,7 @@
           },
           {
             "id": 1,
-            "title": "Some product title",
+            "name": "Some product name",
             "description": "Some product description",
             "brand_id": 1,
             "category_id": 1,
@@ -163,7 +163,7 @@
           },
           {
             "id": 1,
-            "title": "Some product title",
+            "name": "Some product name",
             "description": "Some product description",
             "brand_id": 1,
             "category_id": 1,
@@ -187,7 +187,7 @@
           "$.body[*].id": {
             "match": "type"
           },
-          "$.body[*].title": {
+          "$.body[*].name": {
             "match": "type"
           },
           "$.body[*].description": {
@@ -258,7 +258,7 @@
         "body": [
           {
             "id": 1,
-            "title": "Some product title",
+            "name": "Some product name",
             "description": "Some product description",
             "brand_id": 1,
             "category_id": 2,
@@ -269,7 +269,7 @@
           },
           {
             "id": 1,
-            "title": "Some product title",
+            "name": "Some product name",
             "description": "Some product description",
             "brand_id": 1,
             "category_id": 2,
@@ -293,7 +293,7 @@
           "$.body[*].id": {
             "match": "type"
           },
-          "$.body[*].title": {
+          "$.body[*].name": {
             "match": "type"
           },
           "$.body[*].description": {

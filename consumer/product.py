@@ -20,7 +20,7 @@ class Product:
     """Define the basic Product data we expect to receive from the provider."""
 
     id: int  # pylint: disable=invalid-name
-    title: str
+    name: str
     description: str
     price: float
     discount: float
