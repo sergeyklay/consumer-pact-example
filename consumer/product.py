@@ -7,6 +7,8 @@
 # For the full copyright and license information, please view
 # the LICENSE file that was distributed with this source code.
 
+"""Product management module."""
+
 from dataclasses import dataclass
 from typing import Optional
 
@@ -16,7 +18,7 @@ from consumer.utils import merge_dicts
 
 
 @dataclass(frozen=True)
-class Product:
+class Product:  # pylint: disable=too-many-instance-attributes
     """Define the basic Product data we expect to receive from the provider."""
 
     id: int  # pylint: disable=invalid-name
@@ -52,6 +54,7 @@ class Client:
         self.headers = options.pop('headers', {})
 
     def get_product(self, product_id: int) -> Optional[Product]:
+        """Get single product by its ID."""
         url = (f"{self.options['base_url'].rstrip('/')}"
                f"/{self.options['version']}"
                f"/products/{product_id}")
@@ -63,6 +66,7 @@ class Client:
         return Product(**response.json())
 
     def delete_product(self, product_id: int) -> bool:
+        """Delete a product by its ID."""
         url = (f"{self.options['base_url'].rstrip('/')}"
                f"/{self.options['version']}"
                f"/products/{product_id}")
@@ -74,6 +78,7 @@ class Client:
         return False
 
     def get_products(self, params: dict = None) -> Optional[list]:
+        """Get a list of products."""
         url = (f"{self.options['base_url'].rstrip('/')}"
                f"/{self.options['version']}"
                f"/products")
