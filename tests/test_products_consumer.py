@@ -52,12 +52,12 @@ def mock_service(mock_opts, pact_dir, app_version):
 
 def test_get_existent_product(mock_service, client: Client):
     # Define the Matcher; the expected structure and content of the response
-    expected = ProductFactory(title='product0')
+    expected = ProductFactory(name='product0')
 
     # Define the expected behaviour of the Provider. This determines how the
     # Pact mock provider will behave. In this case, we expect a body which is
     # "Like" the structure defined above. This means the mock provider will
-    # return the EXACT content where defined, e.g. 'product0' for title, and
+    # return the EXACT content where defined, e.g. 'product0' for name, and
     # SOME appropriate content e.g. for description.
     (mock_service
      .given('there is a product with ID 1')
@@ -70,7 +70,7 @@ def test_get_existent_product(mock_service, client: Client):
         product = client.get_product(1)
 
         # In this case the mock Provider will have returned a valid response
-        assert product.title == expected['title']
+        assert product.name == expected['name']
 
         # Make sure that all interactions defined occurred
         mock_service.verify()

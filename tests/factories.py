@@ -11,14 +11,15 @@ import factory
 from pact import Format, Like, Term
 
 
-def url_term(path: str, generate: str):
-    """Create URL pattern for matching with server response.
-
-    For demonstration purposes, it can be moderately simple and not
-    cover all possibilities."""
-    return Term(
-        r'https?://[-a-zA-Z0-9@:%._\+~#=]{1,256}' + path,
-        generate)
+# Etag header regex.
+#
+# Examples:
+#
+#    ETag: "xyzzy"
+#    ETag: W/"xyzzy"
+#    ETag: ""
+#
+ETAG_REGEX = r'^(?:\x57\x2f)?"(?:[\x21\x23-\x7e]*|\r\n[\t ]|\.)*"$'
 
 
 class HeadersFactory(factory.DictFactory):
@@ -29,22 +30,12 @@ class HeadersFactory(factory.DictFactory):
         }
 
     content_type = 'application/json'
-
-    # Examples:
-    #
-    #    ETag: "xyzzy"
-    #    ETag: W/"xyzzy"
-    #    ETag: ""
-    #
-    etag = Term(
-        r'^(?:\x57\x2f)?"(?:[\x21\x23-\x7e]*|\r\n[\t ]|\.)*"$',
-        '"92cfceb39d57d914ed8b14d0e37643de0797ae56"',
-    )
+    etag = Term(ETAG_REGEX, '"92cfceb39d57d914ed8b14d0e37643de0797ae56"')
 
 
 class ProductFactory(factory.DictFactory):
     id = Format().integer
-    title = Like('Some product title')
+    name = Like('Some product name')
     description = Like('Some product description')
     brand_id = Format().integer
     category_id = Format().integer
