@@ -35,6 +35,15 @@ ISO_8601_REGEX = r'^\d{4}-[01]\d-[0-3]\d\x54[0-2]\d:[0-6]\d:[0-6]\d(?:\.\d+)?(?:
 #
 ETAG_REGEX = r'^(?:\x57\x2f)?"(?:[\x21\x23-\x7e]*|\r\n[\t ]|\.)*"$'
 
+# Content-Type header regex.
+#
+# Examples:
+#
+#    Content-Type: application/json
+#    Content-Type: application/json; charset=utf-8
+#
+CONTENT_TYPE_REGEX = r'^application/json(;\s?charset=[\w-]+)?$'
+
 
 def url_term(path: str, generate: str):
     """Create URL pattern for matching with server response.
@@ -60,7 +69,7 @@ class HeadersFactory(factory.DictFactory):
             'etag': 'ETag',
         }
 
-    content_type = 'application/json'
+    content_type = Term(CONTENT_TYPE_REGEX, 'application/json')
     etag = Term(ETAG_REGEX, '"92cfceb39d57d914ed8b14d0e37643de0797ae56"')
 
 
