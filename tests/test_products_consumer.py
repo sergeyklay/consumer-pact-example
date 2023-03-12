@@ -15,7 +15,12 @@ import pytest
 from pact import Consumer, EachLike, Provider
 
 from consumer.product import Client, Product
-from .factories import HeadersFactory, ProductFactory
+from .factories import (
+    HeadersFactory,
+    NotFoundErrorFactory,
+    ProductFactory,
+    url_term,
+)
 
 logging.basicConfig(level=logging.INFO)
 log = logging.getLogger(__name__)
@@ -77,17 +82,11 @@ def test_get_existent_product(mock_service, client: Client):
 
 
 def test_get_nonexistent_product(mock_service, client: Client):
-    expected = {
-        'message': 'Product not found',
-        'code': 404,
-        'status': 'Not Found',
-    }
-
     (mock_service
      .given('there is no product with ID 7777')
      .upon_receiving('a request for a product')
      .with_request('get', '/v2/products/7777')
-     .will_respond_with(404, body=expected, headers={
+     .will_respond_with(404, body=NotFoundErrorFactory(), headers={
         'Content-Type': 'application/json',
      }))
 
@@ -231,6 +230,47 @@ def test_products_in_category_response(mock_service, client: Client):
         assert isinstance(rv[1], Product)
         assert rv[0].category_id == 2
         assert rv[1].category_id == 2
+
+        # Make sure that all interactions defined occurred
+        mock_service.verify()
+
+
+def test_create_product(mock_service, client: Client):
+    headers = HeadersFactory.create()  # type: dict
+    location = url_term(
+        '/v2/products/1',
+        'https://example.com/v2/products/1'
+    )
+    headers.update({'Location': location})
+
+    payload = {
+        'description': 'test',
+        'discount': 241.93,
+        'price': 442.95,
+        'rating': 5.0,
+        'stock': 123,
+        'name': 'test',
+        'category_id': 1,
+        'brand_id': 1,
+    }
+
+    expected = ProductFactory(**payload)
+
+    (mock_service
+     .given('there is category #1 and brand #1')
+     .upon_receiving('a request to create product')
+     .with_request('post', '/v2/products', body=payload, headers={
+        'Content-Type': 'application/json'
+     })
+     .will_respond_with(201, body=expected, headers=headers))
+
+    with mock_service:
+        # Perform the actual request
+        rv = client.create_product(body=payload)
+
+        # In this case the mock Provider will have returned a valid response
+        assert isinstance(rv, Product)
+        # assert len(rv) == 0
 
         # Make sure that all interactions defined occurred
         mock_service.verify()

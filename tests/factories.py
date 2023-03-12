@@ -29,11 +29,28 @@ ISO_8601_REGEX = r'^\d{4}-[01]\d-[0-3]\d\x54[0-2]\d:[0-6]\d:[0-6]\d(?:\.\d+)?(?:
 #
 # Examples:
 #
-#    ETag: "xyzzy"
-#    ETag: W/"xyzzy"
+#    ETag: "abee653e458eb31e7d21ebff89f79232b482c885"
+#    ETag: W/"abee653e458eb31e7d21ebff89f79232b482c885"
 #    ETag: ""
 #
 ETAG_REGEX = r'^(?:\x57\x2f)?"(?:[\x21\x23-\x7e]*|\r\n[\t ]|\.)*"$'
+
+
+def url_term(path: str, generate: str):
+    """Create URL pattern for matching with server response.
+
+     For demonstration purposes, it can be moderately simple and not
+     cover all possibilities."""
+    return Term(
+        fr'^https?://[-a-zA-Z0-9@:%._\+~#=]{{1,256}}{path}$',
+        generate
+    )
+
+
+class NotFoundErrorFactory(factory.DictFactory):
+    message = 'Product not found'
+    code = 404
+    status = 'Not Found'
 
 
 class HeadersFactory(factory.DictFactory):
