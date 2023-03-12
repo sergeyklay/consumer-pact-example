@@ -33,6 +33,10 @@
           "updated_at": "2016-12-15T20:16:01Z"
         },
         "matchingRules": {
+          "$.headers.Content-Type": {
+            "match": "regex",
+            "regex": "^application\\/json(;\\s?charset=[\\w-]+)?$"
+          },
           "$.headers.ETag": {
             "match": "regex",
             "regex": "^(?:\\x57\\x2f)?\"(?:[\\x21\\x23-\\x7e]*|\\r\\n[\\t ]|\\.)*\"$"
@@ -127,6 +131,10 @@
 
         ],
         "matchingRules": {
+          "$.headers.Content-Type": {
+            "match": "regex",
+            "regex": "^application\\/json(;\\s?charset=[\\w-]+)?$"
+          },
           "$.headers.ETag": {
             "match": "regex",
             "regex": "^(?:\\x57\\x2f)?\"(?:[\\x21\\x23-\\x7e]*|\\r\\n[\\t ]|\\.)*\"$"
@@ -190,6 +198,10 @@
           }
         ],
         "matchingRules": {
+          "$.headers.Content-Type": {
+            "match": "regex",
+            "regex": "^application\\/json(;\\s?charset=[\\w-]+)?$"
+          },
           "$.headers.ETag": {
             "match": "regex",
             "regex": "^(?:\\x57\\x2f)?\"(?:[\\x21\\x23-\\x7e]*|\\r\\n[\\t ]|\\.)*\"$"
@@ -257,6 +269,10 @@
 
         ],
         "matchingRules": {
+          "$.headers.Content-Type": {
+            "match": "regex",
+            "regex": "^application\\/json(;\\s?charset=[\\w-]+)?$"
+          },
           "$.headers.ETag": {
             "match": "regex",
             "regex": "^(?:\\x57\\x2f)?\"(?:[\\x21\\x23-\\x7e]*|\\r\\n[\\t ]|\\.)*\"$"
@@ -308,6 +324,10 @@
           }
         ],
         "matchingRules": {
+          "$.headers.Content-Type": {
+            "match": "regex",
+            "regex": "^application\\/json(;\\s?charset=[\\w-]+)?$"
+          },
           "$.headers.ETag": {
             "match": "regex",
             "regex": "^(?:\\x57\\x2f)?\"(?:[\\x21\\x23-\\x7e]*|\\r\\n[\\t ]|\\.)*\"$"
@@ -394,6 +414,10 @@
           "updated_at": "2016-12-15T20:16:01Z"
         },
         "matchingRules": {
+          "$.headers.Content-Type": {
+            "match": "regex",
+            "regex": "^application\\/json(;\\s?charset=[\\w-]+)?$"
+          },
           "$.headers.ETag": {
             "match": "regex",
             "regex": "^(?:\\x57\\x2f)?\"(?:[\\x21\\x23-\\x7e]*|\\r\\n[\\t ]|\\.)*\"$"
