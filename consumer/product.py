@@ -88,3 +88,15 @@ class Client:
             return None
 
         return [Product(**p) for p in response.json()]
+
+    def create_product(self, body: dict = None) -> Optional[Product]:
+        """Create a product with specified attributes."""
+        url = (f"{self.options['base_url'].rstrip('/')}"
+               f"/{self.options['version']}"
+               f"/products")
+
+        response = requests.post(url, json=body, timeout=3.0)
+        if response.status_code != 201:
+            return None
+
+        return Product(**response.json())

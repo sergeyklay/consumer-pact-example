@@ -352,6 +352,69 @@
           }
         }
       }
+    },
+    {
+      "description": "a request to create product",
+      "providerState": "there is category #1 and brand #1",
+      "request": {
+        "method": "post",
+        "path": "/v2/products",
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "body": {
+          "description": "test",
+          "discount": 241.93,
+          "price": 442.95,
+          "rating": 5.0,
+          "stock": 123,
+          "name": "test",
+          "category_id": 1,
+          "brand_id": 1
+        }
+      },
+      "response": {
+        "status": 201,
+        "headers": {
+          "Content-Type": "application/json",
+          "ETag": "\"92cfceb39d57d914ed8b14d0e37643de0797ae56\"",
+          "Location": "https://example.com/v2/products/1"
+        },
+        "body": {
+          "id": 1,
+          "name": "test",
+          "description": "test",
+          "brand_id": 1,
+          "category_id": 1,
+          "price": 442.95,
+          "discount": 241.93,
+          "rating": 5.0,
+          "stock": 123,
+          "created_at": "2002-12-31T23:00:00+01:00",
+          "updated_at": "2016-12-15T20:16:01Z"
+        },
+        "matchingRules": {
+          "$.headers.ETag": {
+            "match": "regex",
+            "regex": "^(?:\\x57\\x2f)?\"(?:[\\x21\\x23-\\x7e]*|\\r\\n[\\t ]|\\.)*\"$"
+          },
+          "$.headers.Location": {
+            "match": "regex",
+            "regex": "^https?:\\/\\/[-a-zA-Z0-9@:%._\\+~#=]{1,256}\\/v2\\/products\\/1$"
+          },
+          "$.body.id": {
+            "match": "type"
+          },
+          "$.body.created_at": {
+            "match": "regex",
+            "regex": "^\\d{4}-[01]\\d-[0-3]\\d\\x54[0-2]\\d:[0-6]\\d:[0-6]\\d(?:\\.\\d+)?(?:(?:[+-]\\d\\d:\\d\\d)|\\x5A)?$"
+          },
+          "$.body.updated_at": {
+            "match": "regex",
+            "regex": "^\\d{4}-[01]\\d-[0-3]\\d\\x54[0-2]\\d:[0-6]\\d:[0-6]\\d(?:\\.\\d+)?(?:(?:[+-]\\d\\d:\\d\\d)|\\x5A)?$"
+          }
+        }
+      }
     }
   ],
   "metadata": {
