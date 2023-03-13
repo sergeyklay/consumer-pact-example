@@ -29,11 +29,6 @@ services:
 
   # The Pact Broker
   broker_app:
-    # Alternatively the DiUS Pact Broker can be used:
-    # image: dius/pact-broker
-    #
-    # As well as changing the image, the destination port will need to be changed
-    # from 9292 below, and in the nginx.conf proxy_pass section
     image: pactfoundation/pact-broker:latest
     ports:
       - '80:9292'
