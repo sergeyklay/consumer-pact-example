@@ -16,10 +16,10 @@ from pact import Consumer, EachLike, Provider
 
 from consumer.product import Client, Product
 from .factories import (
+    Format,
     HeadersFactory,
     NotFoundErrorFactory,
     ProductFactory,
-    url_term,
 )
 
 logging.basicConfig(level=logging.INFO)
@@ -58,6 +58,19 @@ def mock_service(mock_opts, pact_dir, app_version):
 def test_get_existent_product(mock_service, client: Client):
     # Define the Matcher; the expected structure and content of the response
     expected = ProductFactory(name='product0')
+    headers = HeadersFactory.create()  # type: dict
+
+    # FIXME:
+    #
+    # Header verification is disabled due to:
+    # https://github.com/pact-foundation/pact-reference/issues/259
+    #
+    # headers.update({
+    #     'Last-Modified': Term(
+    #         LAST_MODIFIED_REGEX,
+    #         'Mon, 12 Feb 2022 11:36:28 GMT'
+    #     )
+    # })
 
     # Define the expected behaviour of the Provider. This determines how the
     # Pact mock provider will behave. In this case, we expect a body which is
@@ -68,7 +81,7 @@ def test_get_existent_product(mock_service, client: Client):
      .given('there is a product with ID 1')
      .upon_receiving('a request for a product')
      .with_request('get', '/v2/products/1')
-     .will_respond_with(200, body=expected, headers=HeadersFactory()))
+     .will_respond_with(200, body=expected, headers=headers))
 
     with mock_service:
         # Perform the actual request
@@ -112,7 +125,7 @@ def test_delete_nonexistent_product_no_if_match(mock_service, client: Client):
      .upon_receiving('a request to delete a product')
      .with_request('delete', '/v2/products/7777')
      .will_respond_with(428, body=expected, headers={
-        'Content-Type': 'application/json',
+        'Content-Type': Format().media_type_json,
      }))
 
     with mock_service:
@@ -237,7 +250,7 @@ def test_products_in_category_response(mock_service, client: Client):
 
 def test_create_product(mock_service, client: Client):
     headers = HeadersFactory.create()  # type: dict
-    location = url_term(
+    location = Format().url(
         '/v2/products/1',
         'https://example.com/v2/products/1'
     )
@@ -260,7 +273,7 @@ def test_create_product(mock_service, client: Client):
      .given('there is category #1 and brand #1')
      .upon_receiving('a request to create product')
      .with_request('post', '/v2/products', body=payload, headers={
-        'Content-Type': 'application/json'
+        'Content-Type': Format().media_type_json
      })
      .will_respond_with(201, body=expected, headers=headers))
 
