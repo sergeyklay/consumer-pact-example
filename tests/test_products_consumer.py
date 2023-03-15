@@ -59,18 +59,7 @@ def test_get_existent_product(mock_service, client: Client):
     # Define the Matcher; the expected structure and content of the response
     expected = ProductFactory(name='product0')
     headers = HeadersFactory.create()  # type: dict
-
-    # FIXME:
-    #
-    # Header verification is disabled due to:
-    # https://github.com/pact-foundation/pact-reference/issues/259
-    #
-    # headers.update({
-    #     'Last-Modified': Term(
-    #         LAST_MODIFIED_REGEX,
-    #         'Mon, 12 Feb 2022 11:36:28 GMT'
-    #     )
-    # })
+    headers.update({'Last-Modified': Format().last_modified})
 
     # Define the expected behaviour of the Provider. This determines how the
     # Pact mock provider will behave. In this case, we expect a body which is
