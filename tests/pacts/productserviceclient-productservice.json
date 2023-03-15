@@ -17,7 +17,8 @@
         "status": 200,
         "headers": {
           "Content-Type": "application/json",
-          "ETag": "\"bf21a9e8fbc5a3846fb05b4fa0859e0917b2202f\""
+          "ETag": "\"bf21a9e8fbc5a3846fb05b4fa0859e0917b2202f\"",
+          "Last-Modified": "Mon, 12 Feb 2022 11:36:28 GMT"
         },
         "body": {
           "id": 1,
@@ -40,6 +41,10 @@
           "$.headers.ETag": {
             "match": "regex",
             "regex": "^(?:\\x57\\x2f)?\"(?:[\\x21\\x23-\\x7e]*|\\r\\n[\\t ]|\\.)*\"$"
+          },
+          "$.headers.Last-Modified": {
+            "match": "regex",
+            "regex": "^[A-Za-z]{3},\\s\\d{2}\\s[A-Za-z]{3}\\s\\d{4}\\s\\d{2}:\\d{2}:\\d{2}\\sGMT$"
           },
           "$.body.id": {
             "match": "type"
