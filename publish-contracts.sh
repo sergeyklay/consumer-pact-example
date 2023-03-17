@@ -39,7 +39,7 @@ $containerd_cli run \
   -e PACT_BROKER_BASE_URL="${PACT_BROKER_BASE_URL:-http://broker_app:9292}" \
   -e PACT_BROKER_USERNAME="${PACT_BROKER_USERNAME:-pactbroker}" \
   -e PACT_BROKER_PASSWORD="${PACT_BROKER_USERNAME:-pactbroker}" \
-  --network "${BROKER_NETWORK:-broker_default}" \
+  --network "${BROKER_NETWORK:-consumer-pact-example_default}" \
   pactfoundation/pact-cli:latest \
   publish /pacts \
     --consumer-app-version="$app_version" \
