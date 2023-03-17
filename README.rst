@@ -30,8 +30,8 @@ This project uses:
 .. image:: https://raw.githubusercontent.com/sergeyklay/consumer-pact-example/main/cdc-example.png
   :alt: Interaction diagram
 
-Consumer
-========
+Consumer (this project)
+=======================
 
 Consumer API Example is a simple HTTP client that makes requests to Provider,
 gets response from API server and creates data model using the data from
@@ -81,6 +81,14 @@ To run unit tests use the command as follows:
 .. code-block:: console
 
    $ make test
+
+Run the dockerized broker using the ``docker-compose.yml`` file in the root of
+the project:
+
+.. code-block:: console
+
+   $ docker compose -d
+
 
 To publish contracts (pacts) to the broker use the following command:
 
