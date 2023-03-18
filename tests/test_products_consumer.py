@@ -89,7 +89,7 @@ def test_get_nonexistent_product(mock_service, client: Client):
      .upon_receiving('a request for a product')
      .with_request('get', '/v2/products/7777')
      .will_respond_with(404, body=NotFoundErrorFactory(), headers={
-        'Content-Type': 'application/json',
+        'Content-Type': Format().media_type_json,
      }))
 
     with mock_service:
