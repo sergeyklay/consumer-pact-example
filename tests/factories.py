@@ -119,7 +119,10 @@ class Format(BaseFormat):
         * application/json
         * application/json; charset=utf-8
         """
-        return Term(self.RegexesEx.media_type_json.value, 'application/json')
+        return Term(
+            self.RegexesEx.media_type_json.value,
+            'application/json; charset=utf-8'
+        )
 
     class RegexesEx(Enum):
         """Regex Enum for common formats."""

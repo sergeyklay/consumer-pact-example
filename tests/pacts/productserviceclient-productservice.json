@@ -16,7 +16,7 @@
       "response": {
         "status": 200,
         "headers": {
-          "Content-Type": "application/json",
+          "Content-Type": "application/json; charset=utf-8",
           "ETag": "\"bf21a9e8fbc5a3846fb05b4fa0859e0917b2202f\"",
           "Last-Modified": "Mon, 12 Feb 2022 11:36:28 GMT"
         },
@@ -91,12 +91,18 @@
       "response": {
         "status": 404,
         "headers": {
-          "Content-Type": "application/json"
+          "Content-Type": "application/json; charset=utf-8"
         },
         "body": {
           "message": "Product not found",
           "code": 404,
           "status": "Not Found"
+        },
+        "matchingRules": {
+          "$.headers.Content-Type": {
+            "match": "regex",
+            "regex": "^application\\/json(;\\s?charset=[\\w-]+)?$"
+          }
         }
       }
     },
@@ -110,7 +116,7 @@
       "response": {
         "status": 428,
         "headers": {
-          "Content-Type": "application/json"
+          "Content-Type": "application/json; charset=utf-8"
         },
         "body": {
           "code": 428,
@@ -134,7 +140,7 @@
       "response": {
         "status": 200,
         "headers": {
-          "Content-Type": "application/json",
+          "Content-Type": "application/json; charset=utf-8",
           "ETag": "\"bf21a9e8fbc5a3846fb05b4fa0859e0917b2202f\"",
           "X-Pagination": "{\"total\": 0, \"total_pages\": 0}"
         },
@@ -163,7 +169,7 @@
       "response": {
         "status": 200,
         "headers": {
-          "Content-Type": "application/json",
+          "Content-Type": "application/json; charset=utf-8",
           "ETag": "\"bf21a9e8fbc5a3846fb05b4fa0859e0917b2202f\"",
           "X-Pagination": "{\"total\": 3, \"total_pages\": 1, \"first_page\": 1, \"last_page\": 1, \"page\": 1}"
         },
@@ -272,7 +278,7 @@
       "response": {
         "status": 200,
         "headers": {
-          "Content-Type": "application/json",
+          "Content-Type": "application/json; charset=utf-8",
           "ETag": "\"bf21a9e8fbc5a3846fb05b4fa0859e0917b2202f\"",
           "X-Pagination": "{\"total\": 0, \"total_pages\": 0}"
         },
@@ -302,7 +308,7 @@
       "response": {
         "status": 200,
         "headers": {
-          "Content-Type": "application/json",
+          "Content-Type": "application/json; charset=utf-8",
           "ETag": "\"bf21a9e8fbc5a3846fb05b4fa0859e0917b2202f\"",
           "X-Pagination": "{\"total\": 2, \"total_pages\": 1, \"first_page\": 1, \"last_page\": 1, \"page\": 1}"
         },
@@ -391,7 +397,7 @@
         "method": "post",
         "path": "/v2/products",
         "headers": {
-          "Content-Type": "application/json"
+          "Content-Type": "application/json; charset=utf-8"
         },
         "body": {
           "description": "test",
@@ -413,7 +419,7 @@
       "response": {
         "status": 201,
         "headers": {
-          "Content-Type": "application/json",
+          "Content-Type": "application/json; charset=utf-8",
           "ETag": "\"bf21a9e8fbc5a3846fb05b4fa0859e0917b2202f\"",
           "Location": "https://example.com/v2/products/1"
         },
