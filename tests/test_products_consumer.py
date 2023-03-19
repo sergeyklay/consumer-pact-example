@@ -14,7 +14,9 @@ import logging
 import pytest
 from pact import Consumer, EachLike, Provider
 
-from consumer.product import Client, Product
+from consumer import exceptions
+from consumer.client import Client
+from consumer.entities.products import Product
 from .factories import (
     Format,
     HeadersFactory,
@@ -74,7 +76,7 @@ def test_get_existent_product(mock_service, client: Client):
 
     with mock_service:
         # Perform the actual request
-        product = client.get_product(1)
+        product = client.products.get(1)
 
         # In this case the mock Provider will have returned a valid response
         assert product.name == expected['name']
@@ -93,11 +95,9 @@ def test_get_nonexistent_product(mock_service, client: Client):
      }))
 
     with mock_service:
-        # Perform the actual request
-        status = client.get_product(7777)
-
-        # In this case the mock Provider will have returned a valid response
-        assert status is None
+        with pytest.raises(exceptions.NotFoundError):
+            # Perform the actual request
+            _ = client.products.get(7777)
 
         # Make sure that all interactions defined occurred
         mock_service.verify()
@@ -118,11 +118,9 @@ def test_delete_nonexistent_product_no_if_match(mock_service, client: Client):
      }))
 
     with mock_service:
-        # Perform the actual request
-        status = client.delete_product(7777)
-
-        # In this case the mock Provider will have returned a valid response
-        assert status is False
+        with pytest.raises(exceptions.PreconditionRequired):
+            # Perform the actual request
+            _ = client.products.delete(7777)
 
         # Make sure that all interactions defined occurred
         mock_service.verify()
@@ -140,7 +138,7 @@ def test_empty_products_response(mock_service, client: Client):
 
     with mock_service:
         # Perform the actual request
-        rv = client.get_products()
+        rv = client.products.all()
 
         # In this case the mock Provider will have returned a valid response
         assert isinstance(rv, list)
@@ -169,7 +167,7 @@ def test_products_response(mock_service, client: Client):
 
     with mock_service:
         # Perform the actual request
-        rv = client.get_products()
+        rv = client.products.all()
 
         # In this case the mock Provider will have returned a valid response
         assert isinstance(rv, list)
@@ -194,7 +192,7 @@ def test_no_products_in_category_response(mock_service, client: Client):
 
     with mock_service:
         # Perform the actual request
-        rv = client.get_products(params={'cid': 2})
+        rv = client.products.all(query={'cid': 2})
 
         # In this case the mock Provider will have returned a valid response
         assert isinstance(rv, list)
@@ -223,7 +221,7 @@ def test_products_in_category_response(mock_service, client: Client):
 
     with mock_service:
         # Perform the actual request
-        rv = client.get_products(params={'cid': 2})  # type: list[Product]
+        rv = client.products.all(query={'cid': 2})
 
         # In this case the mock Provider will have returned a valid response
         assert isinstance(rv, list)
@@ -268,11 +266,10 @@ def test_create_product(mock_service, client: Client):
 
     with mock_service:
         # Perform the actual request
-        rv = client.create_product(body=payload)
+        rv = client.products.create(**payload)
 
         # In this case the mock Provider will have returned a valid response
         assert isinstance(rv, Product)
-        # assert len(rv) == 0
 
         # Make sure that all interactions defined occurred
         mock_service.verify()

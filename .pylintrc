@@ -22,6 +22,11 @@ disable=
 # formatting, `new` is for `{}` formatting.
 logging-format-style=new
 
+[VARIABLES]
+
+# List of qualified module names which can have objects that can redefine
+# builtins.
+redefining-builtins-modules=requests.exceptions
 
 [BASIC]
 

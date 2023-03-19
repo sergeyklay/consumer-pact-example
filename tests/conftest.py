@@ -10,7 +10,7 @@ import subprocess
 
 import pytest
 
-from consumer.product import Client
+from consumer.client import Client
 
 
 @pytest.fixture(scope='session')
@@ -36,7 +36,6 @@ class TestClient(Client):
     def __init__(self, options: dict):
         super(TestClient, self).__init__(
             base_url=f"http://{options['host_name']}:{options['port']}",
-            version='v2',
         )
 
     @property
