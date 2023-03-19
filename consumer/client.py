@@ -36,6 +36,9 @@ class Client:
         # delay.
         'max_retries': 3,
 
+        # Used API version.
+        'version': 'v2',
+
         # The time stop waiting for a response after a given number of seconds.
         # It is not a time limit on the entire response download; rather, an
         # exception is raised if the server has not issued a response for
@@ -76,7 +79,7 @@ class Client:
         self._init_statuses()
 
         # Initialize each resource facade and injecting client object into it
-        self.products = Products(self)
+        self.products = Products(self, api_version=self.options['version'])
 
     def request(self, method: str, path: str, **options):
         """Dispatches a request to the airSlate API."""
