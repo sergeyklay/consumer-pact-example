@@ -7,14 +7,15 @@
 
 """Unit test for Product service client."""
 
-from consumer.product import Client
+from consumer.client import Client
 
 
 def test_custom_options():
     client = Client()
     assert client.options == {
         'base_url': 'http://localhost',
-        'version': 'v1',
+        'max_retries': 3,
+        'timeout': 5.0,
     }
 
     client = Client(foo='1', bar='2', baz='3')
@@ -23,5 +24,6 @@ def test_custom_options():
         'base_url': 'http://localhost',
         'baz': '3',
         'foo': '1',
-        'version': 'v1',
+        'max_retries': 3,
+        'timeout': 5.0,
     }

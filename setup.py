@@ -111,6 +111,7 @@ CLASSIFIERS = [
 # Dependencies that are downloaded by pip on installation and why.
 INSTALL_REQUIRES = [
     'requests>=2.28.2'  # Python HTTP for Humans.
+    'urllib3>=1.26.14'  # HTTP library with thread-safe connection pooling, file post, and more.  # noqa: E501
 ]
 
 # List additional groups of dependencies here (e.g. testing dependencies).
