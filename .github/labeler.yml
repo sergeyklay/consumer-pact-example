@@ -8,6 +8,9 @@
 python:
   - any: ['consumer/**/*']
 
+tests:
+  - any: ['tests/**/*']
+
 github_actions:
   - any: ['.github/**/*']
 
