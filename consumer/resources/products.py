@@ -7,19 +7,21 @@
 
 """Products API resource module."""
 
-from consumer.entities.products import Product as ProductEntity
+from consumer.models import Product
+from consumer.schemas import ProductSchema
 from . import BaseResource
 
 
 class Products(BaseResource):
     """Represent Products API resource."""
 
-    def get(self, product_id: int) -> ProductEntity:
+    def get(self, product_id: int) -> Product:
         """Get the requested product."""
         url = self.resolve_endpoint(f'products/{product_id}')
         rv, _ = self.client.get(url)
 
-        return ProductEntity.from_dict(rv)
+        schema = ProductSchema()
+        return schema.load(rv)
 
     def delete(self, product_id: int, **options) -> bool:
         """Get the requested product."""
@@ -28,16 +30,18 @@ class Products(BaseResource):
 
         return True
 
-    def create(self, **data) -> ProductEntity:
+    def create(self, **data) -> Product:
         """Create a product."""
         url = self.resolve_endpoint('products')
         rv, _ = self.client.post(url, data=data)
 
-        return ProductEntity.from_dict(rv)
+        schema = ProductSchema()
+        return schema.load(rv)
 
-    def all(self, **options) -> list[ProductEntity]:
+    def all(self, **options) -> list[Product]:
         """Get list of products."""
         url = self.resolve_endpoint('products')
         rv, _ = self.client.get(url, **options)
 
-        return ProductEntity.from_collection(rv)
+        schema = ProductSchema()
+        return [schema.load(p) for p in rv]

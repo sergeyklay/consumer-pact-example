@@ -164,5 +164,5 @@ class ProductFactory(factory.DictFactory):
     discount = Format().decimal
     rating = Format().decimal
     stock = Format().integer
-    created_at = Format().iso_datetime
-    updated_at = Format().iso_datetime
+    created_at = Format().iso_datetime_ms
+    updated_at = Format().iso_datetime_ms
