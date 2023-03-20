@@ -25,14 +25,16 @@ class BaseEntity(metaclass=ABCMeta):
         """Invoke for any attr not in the instance's __dict__."""
         if item in super().__getattribute__('attributes'):
             return super().__getattribute__('attributes')[item]
-        return None
+
+        msg = f"'{self.__class__.__name__}' object has no attribute '{item}'"
+        raise AttributeError(msg)
 
     def __setattr__(self, key, value):
         """Implement setattr(self, name, value)."""
         internal = ('attributes', )
         if key in internal:
             return super().__setattr__(key, value)
-        return None
+        return super().__getattribute__('attributes').update({key: value})
 
     def __getitem__(self, item):
         """Getter for the attribute value."""
@@ -55,6 +57,14 @@ class BaseEntity(metaclass=ABCMeta):
         self.attributes = {}
         for key, val in data.items():
             self.attributes[key] = val
+
+    def __getstate__(self):
+        """Play nice with pickle."""
+        return self.to_dict()
+
+    def to_dict(self):
+        """Convert this entity to a dictionary."""
+        return self.attributes
 
     @classmethod
     def from_dict(cls, fields):
