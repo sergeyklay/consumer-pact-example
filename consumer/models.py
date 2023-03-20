@@ -8,6 +8,7 @@
 """Module providing the functionality of data models."""
 
 from dataclasses import dataclass
+from datetime import datetime
 
 
 @dataclass(frozen=True)
@@ -45,8 +46,8 @@ class Product:  # pylint: disable=too-many-instance-attributes
     stock: int
     brand_id: int
     category_id: int
-    created_at: str
-    updated_at: str
+    created_at: datetime
+    updated_at: datetime
 
     def __repr__(self):
         """Provide an easy-to-read description of the current instance."""
