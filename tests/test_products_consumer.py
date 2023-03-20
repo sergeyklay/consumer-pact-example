@@ -16,7 +16,7 @@ from pact import Consumer, EachLike, Provider
 
 from consumer import exceptions
 from consumer.client import Client
-from consumer.entities.products import Product
+from consumer.models import Product
 from .factories import (
     Format,
     HeadersFactory,
@@ -270,6 +270,7 @@ def test_create_product(mock_service, client: Client):
 
         # In this case the mock Provider will have returned a valid response
         assert isinstance(rv, Product)
+        assert rv.price == 442.95
 
         # Make sure that all interactions defined occurred
         mock_service.verify()
