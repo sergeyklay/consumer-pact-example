@@ -12,6 +12,10 @@ classes within Consumer API example.
 """
 
 from abc import ABCMeta
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from consumer.client import Client
 
 
 # pylint: disable=too-few-public-methods
@@ -20,7 +24,7 @@ class BaseResource(metaclass=ABCMeta):
 
     API_VERSION = 'v2'
 
-    def __init__(self, client, api_version=None):
+    def __init__(self, client: 'Client', api_version=None):
         """A :class:`BaseResource` base object for consumer resources."""
         self.client = client
         self.api_version = api_version or BaseResource.API_VERSION
