@@ -14,6 +14,7 @@ from requests.exceptions import (
     RequestException,
     RetryError
 )
+from requests.models import Response
 from requests.structures import CaseInsensitiveDict
 from urllib3.exceptions import MaxRetryError
 
@@ -81,7 +82,7 @@ class Client:
         # Initialize each resource facade and injecting client object into it
         self.products = Products(self, api_version=self.options['version'])
 
-    def request(self, method: str, path: str, **options):
+    def request(self, method: str, path: str, **options) -> Response:
         """Dispatches a request to the airSlate API."""
         options = merge_dicts(self.options, options)
         url = options['base_url'].rstrip('/') + '/' + path.lstrip('/')
@@ -98,13 +99,7 @@ class Client:
             if 500 <= response.status_code < 600:
                 raise exceptions.InternalServerError(response=response)
 
-            if 'stream' in options and options['stream']:
-                return response
-
-            response_data = response.json()
-            response_headers = response.headers
-
-            return response_data, response_headers
+            return response
         except (MaxRetryError, RetryError) as retry_exc:
             code = None
             response = None
@@ -138,7 +133,7 @@ class Client:
             if isinstance(cls, type) and issubclass(cls, exceptions.ApiError):
                 self.statuses[cls().code] = cls
 
-    def get(self, path, query=None, **options) -> list:
+    def get(self, path, query=None, **options) -> Response:
         """Parses GET request options and dispatches a request."""
         # Select query string options.
         query_options = self._parse_query_options(options)
@@ -162,7 +157,7 @@ class Client:
         return self.request('get', path, params=query, headers=headers,
                             **options)
 
-    def post(self, path, data, **options):
+    def post(self, path, data, **options) -> Response:
         """Parses POST request options and dispatches a request."""
         return self._create('post', path, data, **options)
 
@@ -183,7 +178,7 @@ class Client:
         return self.request(method, path, data=body, headers=headers,
                             **options)
 
-    def delete(self, path, **options) -> dict:
+    def delete(self, path, **options) -> Response:
         """Dispatches a DELETE request."""
         return self.request('delete', path, **options)
 
