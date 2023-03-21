@@ -13,3 +13,4 @@ flake8-import-order
 pact-python
 pylint
 pytest
+responses

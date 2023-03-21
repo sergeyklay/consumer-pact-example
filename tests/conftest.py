@@ -44,7 +44,7 @@ class TestClient(Client):
 
 
 @pytest.fixture
-def client(mock_opts: dict) -> Client:
+def client(mock_opts: dict) -> TestClient:
     """Create an HTTP client to use in tests."""
     return TestClient(mock_opts)
 
