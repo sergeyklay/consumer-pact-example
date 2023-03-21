@@ -41,10 +41,7 @@ class ApiError(BaseError):
 
 
 class BadRequest(ApiError):
-    """Error raised for all kinds of bad requests.
-
-    Raise if the client sends something to the server cannot handle.
-    """
+    """Represent 400 (Bad Request) provider response."""
 
     def __init__(self, response=None):
         super().__init__(
@@ -55,7 +52,7 @@ class BadRequest(ApiError):
 
 
 class NotFoundError(ApiError):
-    """Error raised when the server can not find the requested resource."""
+    """Represent 404 (Not Found) provider response."""
 
     def __init__(self, response=None):
         super().__init__(
@@ -66,7 +63,7 @@ class NotFoundError(ApiError):
 
 
 class MethodNotAllowed(ApiError):
-    """Error raised when the server can not find the requested resource."""
+    """Represent 405 (Method Not Allowed) provider response."""
 
     def __init__(self, response=None):
         super().__init__(
@@ -76,19 +73,30 @@ class MethodNotAllowed(ApiError):
         )
 
 
-class UnprocessableContent(ApiError):
-    """Error raised when server returns Precondition Required response."""
+class PreconditionFailed(ApiError):
+    """Represent 412 (Precondition Failed) provider response."""
+
+    def __init__(self, response=None):
+        super().__init__(
+            code=412,
+            status='Precondition Failed',
+            response=response
+        )
+
+
+class UnprocessableEntity(ApiError):
+    """Represent 422 (Unprocessable Entity) provider response."""
 
     def __init__(self, response=None):
         super().__init__(
             code=422,
-            status='Unprocessable Content',
+            status='Unprocessable Entity',
             response=response
         )
 
 
 class PreconditionRequired(ApiError):
-    """Error raised when server returns Precondition Required response."""
+    """Represent 428 (Precondition Required) provider response."""
 
     def __init__(self, response=None):
         super().__init__(
@@ -110,10 +118,7 @@ class RetryApiError(ApiError):
 
 
 class InternalServerError(ApiError):
-    """Internal server error class.
-
-    The server has encountered a situation it doesn't know how to handle.
-    """
+    """Represent 500 (Internal Server Error) provider response."""
 
     def __init__(self, status=None, message=None, response=None):
         code = 500
