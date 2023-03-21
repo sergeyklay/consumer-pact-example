@@ -24,6 +24,29 @@ from .resources.products import Products
 from .utils import intersect_keys, merge_dicts
 
 
+def default_user_agent() -> str:
+    """Return a string representing the default user agent."""
+    return f'consumer-example/{__version__} ({__url__})'
+
+
+def default_headers() -> CaseInsensitiveDict:
+    """Return a dictionary representing the default request headers."""
+    return CaseInsensitiveDict({
+        # Default 'User-Agent' header.
+        # Usually should be replaced with a more specific value.
+        'User-Agent': default_user_agent(),
+
+        # Default Content-Type header:
+        'Content-Type': 'application/json; charset=utf-8',
+
+        # Default Accept header.
+        #
+        # The client may pass a list of media type parameters to the
+        # server. The server finds out that a valid parameter is included.
+        'Accept': 'application/json'
+    })
+
+
 class Client:
     """API client class."""
 
@@ -147,7 +170,7 @@ class Client:
 
         # Values in the ``options['headers']`` takes precedence.
         headers = merge_dicts(
-            self._default_headers(),
+            default_headers(),
             options.pop('headers', {})
         )
 
@@ -171,7 +194,7 @@ class Client:
 
         # Values in the ``options['headers']`` takes precedence.
         headers = merge_dicts(
-            self._default_headers(),
+            default_headers(),
             options.pop('headers', {})
         )
 
@@ -247,24 +270,3 @@ class Client:
         request_options['headers'] = headers
 
         return request_options
-
-    def _default_user_agent(self):
-        """Return a string representing the default user agent."""
-        return f'consumer-example/{__version__} ({__url__})'
-
-    def _default_headers(self):
-        """Return a dictionary representing the default request headers."""
-        return CaseInsensitiveDict({
-            # Default 'User-Agent' header.
-            # Usually should be replaced with a more specific value.
-            'User-Agent': self._default_user_agent(),
-
-            # Default Content-Type header:
-            'Content-Type': 'application/json; charset=utf-8',
-
-            # Default Accept header.
-            #
-            # The client may pass a list of media type parameters to the
-            # server. The server finds out that a valid parameter is included.
-            'Accept': 'application/json'
-        })
