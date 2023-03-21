@@ -131,6 +131,7 @@ EXTRAS_REQUIRE = {
         'pact-python>=1.7.0',  # Create and verify consumer driven contracts
         'pylint>=2.6.2',  # Python code static checker
         'pytest>=6.2.4',  # Our tests framework
+        'responses>=0.22.0',  # Mocking out the ``requests`` Python library
     ],
     'docs': [
     ],
