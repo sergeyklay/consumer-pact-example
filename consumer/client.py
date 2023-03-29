@@ -124,13 +124,12 @@ class Client:
 
             return response
         except (MaxRetryError, RetryError) as retry_exc:
-            code = None
+            code = 503
             response = None
 
-            if isinstance(retry_exc, RetryError):
+            if hasattr(retry_exc, 'response') and retry_exc.response:
                 response = retry_exc.response
-            else:
-                code = 503
+                code = response.status_code
 
             raise exceptions.RetryApiError(
                 code=code,
