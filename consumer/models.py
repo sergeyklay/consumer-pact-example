@@ -14,6 +14,7 @@ from datetime import datetime
 @dataclass(frozen=True)
 class Category:
     """Define the Category model we expect to receive from the provider."""
+
     id: int  # pylint: disable=invalid-name
     name: str
 
@@ -25,6 +26,7 @@ class Category:
 @dataclass(frozen=True)
 class Brand:
     """Define the Brand model data we expect to receive from the provider."""
+
     id: int  # pylint: disable=invalid-name
     name: str
 
