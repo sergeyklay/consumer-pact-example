@@ -5,8 +5,8 @@
         <a href="https://github.com/sergeyklay/consumer-pact-example/actions/workflows/test-code.yaml">
             <img src="https://github.com/sergeyklay/consumer-pact-example/actions/workflows/test-code.yaml/badge.svg" alt="Test Code" />
         </a>
-        <a href="https://codecov.io/gh/sergeyklay/consumer-pact-example" >
-            <img src="https://codecov.io/gh/sergeyklay/consumer-pact-example/branch/main/graph/badge.svg?token=9FdBH27I9K"/>
+        <a href="https://codecov.io/gh/sergeyklay/consumer-pact-example">
+            <img src="https://codecov.io/gh/sergeyklay/consumer-pact-example/branch/main/graph/badge.svg?token=9FdBH27I9K" alt="Coverage Status" />
         </a>
     </p>
 
