@@ -20,7 +20,7 @@ class ApiError(BaseError):
         self.status = status
         self.message = message
         self.response = response
-        self.errors = {}
+        self.errors = []
 
         if response is not None:
             json = response.json()
