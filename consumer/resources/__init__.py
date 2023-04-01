@@ -32,9 +32,14 @@ class BaseResource(metaclass=ABCMeta):
     def resolve_endpoint(self, path: str) -> str:
         """Resolve resource endpoint taking into account API version.
 
-        >>> self.resolve_endpoint('/products')
-        /v1/products
-        >>> self.resolve_endpoint('products/42')
-        /v1/products/42
+        >>> from consumer.client import Client
+        >>> resource = BaseResource(Client())
+        >>> resource.resolve_endpoint('/products')
+        '/v2/products'
+        >>> resource.resolve_endpoint('products/42')
+        '/v2/products/42'
+        >>> resource.api_version = 'v1'
+        >>> resource.resolve_endpoint('/products')
+        '/v1/products'
         """
         return f"/{self.api_version.strip('/')}/{path.lstrip('/')}"
