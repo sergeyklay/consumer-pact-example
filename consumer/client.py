@@ -248,9 +248,14 @@ class Client:
         >>> self._parse_request_options({'headers': {'x-header': 'value'}})
         {'timeout': 5.0, 'headers': {'x-header': 'value'}}
         """
+        # Merge options with default options
         options = self._merge_options(options)
+
+        # Select request options keys from the provided options object
         request_options = intersect_keys(options, self.REQUEST_OPTIONS)
 
+        # If 'params' is in request_options, format the params values to be
+        # JSON serializable
         if 'params' in request_options:
             params = request_options['params']
             for key in params:
@@ -259,11 +264,12 @@ class Client:
                 if isinstance(params[key], bool) or params[key] is None:
                     params[key] = json.dumps(params[key])
 
+        # If 'data' is in request_options, serialize it to JSON, since
+        # requests library doesn't do it automatically
         if 'data' in request_options:
-            # Serialize ``options['data']`` to JSON, requests doesn't do this
-            # automatically.
             request_options['data'] = json.dumps(request_options['data'])
 
+        # Update headers with request options and return the updated dictionary
         headers = self.headers.copy()
         headers.update(request_options.get('headers', {}))
         request_options['headers'] = headers
