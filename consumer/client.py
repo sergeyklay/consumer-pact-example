@@ -207,12 +207,23 @@ class Client:
     def _parse_parameter_options(self, options):
         """Select all unknown options.
 
-        Select all unknown options (not query string, API, or request options).
-        >>> self._parse_parameter_options({})
+        This function takes a dictionary of options as input and returns a new
+        dictionary containing only the unknown options. Unknown options are
+        those that are not part of the client, query, or request options.
+
+        :param options: A dictionary of options.
+        :type options: dict
+        :return: Returns a dictionary containing only the unknown options.
+        :rtype: dict
+
+        Usage:
+
+        >>> client = Client()
+        >>> client._parse_parameter_options({})
         {}
-        >>> self._parse_parameter_options({'foo': 'bar'})
+        >>> client._parse_parameter_options({'foo': 'bar'})
         {'foo': 'bar'}
-        >>> self._parse_parameter_options({'timeout': 1.0})
+        >>> client._parse_parameter_options({'timeout': 1.0})
         {}
         """
         options = self._merge_options(options)
@@ -221,31 +232,55 @@ class Client:
     def _parse_query_options(self, options):
         """Select query string options out of the provided options object.
 
-        >>> self._parse_query_options({})
+        This function selects query string options from the provided `options`
+        object based on the pre-defined :attr:`QUERY_OPTIONS` dictionary.
+         It returns a new dictionary containing only the key-value pairs that
+         match the keys in :attr:`QUERY_OPTIONS`.
+
+        :param options: Dictionary of query string options.
+        :type options: dict
+        :return: Returns a dictionary of query string options filtered by the
+            pre-defined :attr:`QUERY_OPTIONS`.
+        :rtype: dict
+
+        Usage:
+
+        >>> client = Client()
+        >>> client._parse_query_options({})
         {}
-        >>> self._parse_query_options({'foo': 'bar'})
+        >>> client._parse_query_options({'foo': 'bar'})
         {}
-        >>> self._parse_query_options({'include': 'fields'})
-        {'include': 'fields'}
+        >>> client._parse_query_options({'bid': 42})
+        {'bid': 42}
         """
-        options = merge_dicts(self.options, options)
-        return intersect_keys(options, self.ALL_OPTIONS, invert=True)
+        options = self._merge_options(options)
+        return intersect_keys(options, self.QUERY_OPTIONS)
 
     def _parse_request_options(self, options):
         """Select request options out of the provided options object.
 
-        Select and formats options to be passed to the 'requests' library's
-        request methods.
+        This function takes a dictionary options as a parameter and returns a
+        dictionary containing selected and formatted request options, which
+        will be passed to the `requests library for performing an HTTP request.
 
-        >>> self._parse_request_options({})
+        :param options: A dictionary of options to be passed to the 'requests'
+            library's request methods.
+        :type options: dict
+        :return: Returns a dictionary of selected and formatted request options
+        :rtype: dict
+
+        Usage:
+
+        >>> client = Client()
+        >>> client._parse_request_options({})
         {'timeout': 5.0, 'headers': {}}
-        >>> self._parse_request_options({'timeout': 10.0})
+        >>> client._parse_request_options({'timeout': 10.0})
         {'timeout': 10.0, 'headers': {}}
-        >>> self._parse_request_options({'params': {'foo': True}})
+        >>> client._parse_request_options({'params': {'foo': True}})
         {'timeout': 5.0, 'params': {'foo': 'true'}, 'headers': {}}
-        >>> self._parse_request_options({'data': {'foo': 'bar'}})
+        >>> client._parse_request_options({'data': {'foo': 'bar'}})
         {'timeout': 5.0, 'data': '{"foo": "bar"}', 'headers': {}}
-        >>> self._parse_request_options({'headers': {'x-header': 'value'}})
+        >>> client._parse_request_options({'headers': {'x-header': 'value'}})
         {'timeout': 5.0, 'headers': {'x-header': 'value'}}
         """
         # Merge options with default options
