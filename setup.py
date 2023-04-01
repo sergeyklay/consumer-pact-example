@@ -113,8 +113,8 @@ CLASSIFIERS = [
 # Dependencies that are downloaded by pip on installation and why.
 INSTALL_REQUIRES = [
     'marshmallow>=3.19.0',  # Complex data (de)serialization
-    'requests>=2.28.2'  # Python HTTP for Humans.
-    'urllib3>=1.26.14'  # HTTP library with thread-safe connection pooling, file post, and more.  # noqa: E501
+    'requests>=2.28.2',  # Python HTTP for Humans.
+    'urllib3>=1.26.14',  # HTTP library with thread-safe connection pooling, file post, and more.  # noqa: E501
 ]
 
 # List additional groups of dependencies here (e.g. testing dependencies).
