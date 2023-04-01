@@ -53,12 +53,6 @@ Trivial/Internal Changes
 * Bumped ``pytest`` from 7.2.1 to 7.2.2.
 
 
-Bug Fixes
-^^^^^^^^^
-
-* Fixed database seeder to not try to create tables twice.
-
-
 ----
 
 
