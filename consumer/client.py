@@ -9,6 +9,7 @@
 
 import json
 
+from asdicts.dict import intersect_keys, merge
 from requests.exceptions import (
     ConnectionError,
     RequestException,
@@ -21,7 +22,6 @@ from urllib3.exceptions import MaxRetryError
 from . import __url__, __version__
 from . import exceptions, session
 from .resources.products import Products
-from .utils import intersect_keys, merge_dicts
 
 
 def default_user_agent() -> str:
@@ -94,7 +94,7 @@ class Client:
 
     def __init__(self, **options):
         """A :class:`Client` object for interacting with API."""
-        self.options = merge_dicts(self.DEFAULT_OPTIONS, options)
+        self.options = merge(self.DEFAULT_OPTIONS, options)
         self.headers = options.pop('headers', {})
         self.session = session.factory(
             max_retries=self.options['max_retries'],
@@ -107,7 +107,7 @@ class Client:
 
     def request(self, method: str, path: str, **options) -> Response:
         """Dispatches a request to the airSlate API."""
-        options = merge_dicts(self.options, options)
+        options = self._merge_options(options)
         url = options['base_url'].rstrip('/') + '/' + path.lstrip('/')
 
         # Select and formats options to be passed to the request
@@ -165,10 +165,10 @@ class Client:
 
         # Values in the ``query`` takes precedence.
         _query = {} if query is None else query
-        query = merge_dicts(query_options, parameter_options, _query)
+        query = merge(query_options, parameter_options, _query)
 
         # Values in the ``options['headers']`` takes precedence.
-        headers = merge_dicts(
+        headers = merge(
             default_headers(),
             options.pop('headers', {})
         )
@@ -189,10 +189,10 @@ class Client:
         parameter_options = self._parse_parameter_options(options)
 
         # Values in the ``data`` takes precedence.
-        body = merge_dicts(parameter_options, data)
+        body = merge(parameter_options, data)
 
         # Values in the ``options['headers']`` takes precedence.
-        headers = merge_dicts(
+        headers = merge(
             default_headers(),
             options.pop('headers', {})
         )
@@ -215,7 +215,7 @@ class Client:
         >>> self._parse_parameter_options({'timeout': 1.0})
         {}
         """
-        options = merge_dicts(self.options, options)
+        options = self._merge_options(options)
         return intersect_keys(options, self.ALL_OPTIONS, invert=True)
 
     def _parse_query_options(self, options):
@@ -248,7 +248,7 @@ class Client:
         >>> self._parse_request_options({'headers': {'x-header': 'value'}})
         {'timeout': 5.0, 'headers': {'x-header': 'value'}}
         """
-        options = merge_dicts(self.options, options)
+        options = self._merge_options(options)
         request_options = intersect_keys(options, self.REQUEST_OPTIONS)
 
         if 'params' in request_options:
@@ -269,3 +269,11 @@ class Client:
         request_options['headers'] = headers
 
         return request_options
+
+    def _merge_options(self, *objects):
+        """Merge option objects with the client's object.
+
+        Merges one or more options objects with client's options and returns a
+        new options object.
+        """
+        return merge(self.options, *objects)
