@@ -15,7 +15,6 @@
 # Directories to ignore (do not add trailing '/'s, they skip symlinks):
 /*.egg-info
 /.pytest_cache
-/node_modules
 
 # Python cache.
 *.py[cod]
