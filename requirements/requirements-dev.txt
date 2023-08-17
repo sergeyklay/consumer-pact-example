@@ -203,9 +203,9 @@ httpcore==0.16.3 \
     --hash=sha256:c5d6f04e2fc530f39e0c077e6a30caa53f1451096120f1f38b954afd0b17c0cb \
     --hash=sha256:da1fb708784a938aa084bde4feb8317056c55037247c787bd7e19eb2c2949dc0
     # via httpx
-httpx==0.23.1 \
-    --hash=sha256:0b9b1f0ee18b9978d637b0776bfd7f54e2ca278e063e3586d8f01cda89e042a8 \
-    --hash=sha256:202ae15319be24efe9a8bd4ed4360e68fde7b38bcc2ce87088d416f026667d19
+httpx==0.23.3 \
+    --hash=sha256:9818458eb565bb54898ccb9b8b251a28785dd4a55afbc23d0eb410754fe7d0f9 \
+    --hash=sha256:a211fcce9b1254ea24f0cd6af9869b3d29aba40154e947d2a07bb499b3e310d6
     # via pact-python
 idna==3.4 \
     --hash=sha256:814f528e8dead7d329833b91c5faa87d60bf71824cd12a7530b5526063d02cb4 \
@@ -270,8 +270,8 @@ packaging==23.0 \
     --hash=sha256:714ac14496c3e68c99c29b00845f7a2b85f3bb6f1078fd9f72fd20f0570002b2 \
     --hash=sha256:b6ad297f8907de0fa2fe1ccbd26fdaf387f5f47c7275fedf8cce89f99446cf97
     # via pytest
-pact-python==1.7.0 \
-    --hash=sha256:840720efe8b379773478fce08a542b98de0e1cba4373b36318c12abc9f1a2e24
+pact-python==2.0.1 \
+    --hash=sha256:151d18c22cd997d8f25a3b584189fb9ae17cae9b99d76eca585636a45355ee59
     # via -r requirements/requirements-dev.in
 platformdirs==3.1.1 \
     --hash=sha256:024996549ee88ec1a9aa99ff7f8fc819bb59e2c3477b410d90a16d32d6e707aa \
