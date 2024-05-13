@@ -7,8 +7,6 @@
 
 """Session module for Consumer API example."""
 
-import warnings
-
 from requests import Session
 from requests.adapters import HTTPAdapter
 from urllib3.util.retry import Retry
@@ -25,14 +23,7 @@ def create_retry(max_retries=3, backoff_factor=1.0) -> Retry:
         504,  # Gateway Timeout
     })
 
-    method_whitelist = frozenset({
-        'DELETE',
-        'GET',
-        'HEAD',
-        'OPTIONS',
-        'PUT',
-        'POST',
-    })
+    method_whitelist = {'DELETE', 'GET', 'HEAD', 'OPTIONS', 'PUT', 'POST'}
 
     # Prevent incorrect configuration to avoid hammering API servers
     backoff_factor = abs(float(backoff_factor))
@@ -40,29 +31,14 @@ def create_retry(max_retries=3, backoff_factor=1.0) -> Retry:
         backoff_factor = 1.0
 
     max_retries = abs(int(max_retries))
-
     retry_kwargs = {
         'total': max_retries,
         'read': max_retries,
         'connect': max_retries,
         'backoff_factor': backoff_factor,
-        'status_forcelist': status_forcelist
+        'status_forcelist': status_forcelist,
+        'allowed_methods': method_whitelist
     }
-
-    # urllib3 1.26.0 started issuing a DeprecationWarning for using the
-    # 'method_whitelist' init parameter of Retry and announced its removal in
-    # version 2.0. The replacement parameter is 'allowed_methods'.
-    # Find out which init parameter to use:
-    with warnings.catch_warnings():
-        warnings.filterwarnings('error')
-        try:
-            Retry(method_whitelist={})
-        except (DeprecationWarning, TypeError):
-            retry_methods_param = 'allowed_methods'
-        else:
-            retry_methods_param = 'method_whitelist'
-
-    retry_kwargs[retry_methods_param] = method_whitelist
 
     return Retry(**retry_kwargs)
 
